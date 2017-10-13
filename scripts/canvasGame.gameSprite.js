@@ -151,7 +151,7 @@
             var stepData = canvasSprite.animationSteps[stepKey];
             var stepRange = [];
             stepRange.push(totalAnimationFrames + 1);
-            totalAnimationFrames += Math.ceil(stepData.frameDuration * thisGameSpeed);
+            totalAnimationFrames += Math.ceil(stepData.frameDuration * (1 / canvasSprite.frameSpeed) * thisGameSpeed);
             stepRange.push(totalAnimationFrames);
             spriteAnimationTimeline.push(stepRange);
             }
