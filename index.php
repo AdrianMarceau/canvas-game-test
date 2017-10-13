@@ -58,7 +58,6 @@ $cache_timestamp = '2017-10-11';
 
     <script type="text/javascript" src="scripts/canvasGame.gameSprite.js?<?= $cache_timestamp ?>"></script>
 
-    <script type="text/javascript" src="scripts/canvasGame.resourceIndex.js?<?= $cache_timestamp ?>"></script>
     <script type="text/javascript" src="scripts/canvasGame.resourceManager.js?<?= $cache_timestamp ?>"></script>
 
     <script type="text/javascript" src="scripts/canvasGame.fieldIndex.js?<?= $cache_timestamp ?>"></script>
