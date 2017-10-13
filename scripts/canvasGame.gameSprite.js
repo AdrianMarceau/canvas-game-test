@@ -25,6 +25,11 @@
         this.thisGame = thisGame;
         thisGame = typeof game !== 'undefined' ? game : {};
 
+        if (typeof thisGame.gameState !== 'undefined'
+            && typeof thisGame.gameState.currentFrame !== 'undefined'){
+            this.globalFrameStart = thisGame.gameState.currentFrame;
+            }
+
     };
 
     // Define a prototype function for creating this object
@@ -32,15 +37,25 @@
 
         update: function(dt){
 
-            if (typeof thisGame.gameSettings !== 'undefined'
-                && typeof thisGame.gameSettings.baseGameSpeed !== 'undefined'){
-                var thisGameSpeed = thisGame.gameSettings.baseGameSpeed;
-            } else {
-                var thisGameSpeed = 1;
-            }
+            /*
 
             var speed = this.speed * (1 / thisGameSpeed);
             this._index += speed * dt;
+            */
+
+            if (typeof thisGame.gameSettings !== 'undefined'
+                && typeof thisGame.gameSettings.baseGameSpeed !== 'undefined'){
+                var thisGameSpeed = thisGame.gameSettings.baseGameSpeed;
+                } else {
+                var thisGameSpeed = 1;
+                }
+
+            if (typeof thisGame.gameState !== 'undefined'
+                && typeof thisGame.gameState.currentFrame !== 'undefined'){
+                var diff = thisGame.gameState.currentFrame - this.globalFrameStart;
+                var index = Math.floor((diff / 60) * this.speed * (1 / thisGameSpeed));
+                this._index = index;
+                }
 
             },
 
