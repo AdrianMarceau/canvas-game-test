@@ -33,13 +33,14 @@
             frameLayout: 'horizontal',
             frameSize: 80,
             frameSpeed: 1,
-            frameSequence: [0, 1, 2, 1],
+            frameSequence: [0],
             animationSteps: []
             }
         };
 
     // Define a function for adding a new robot to the index
     function indexRobot(robotInfo){
+        //console.log('canvasGameEngine.indexRobot(robotInfo)', robotInfo);
 
         // Return false on invalid args
         if (typeof robotInfo === 'undefined'){ return false; }
