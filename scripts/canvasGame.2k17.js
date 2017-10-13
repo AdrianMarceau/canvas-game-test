@@ -335,15 +335,15 @@
         //debug('\t thisGame.gameSettings.pauseGameLoop = ' + thisGame.gameSettings.pauseGameLoop);
         if (thisGame.gameSettings.pauseGameLoop == true){ return false; }
 
-        thisGame.gameState.loopCounter++;
-        thisGame.gameState.currentFrame = thisGame.gameState.loopCounter + 1;
-        //debug('\t thisGame.gameState.loopCounter = ' + thisGame.gameState.loopCounter);
-
         var nowTime = Date.now();
         var diffTime = (nowTime - thisGame.gameState.lastLoopTime) / 1000.0;
 
         updateGameCanvas();
         renderGameCanvas();
+
+        thisGame.gameState.loopCounter++;
+        thisGame.gameState.currentFrame = thisGame.gameState.loopCounter + 1;
+        //debug('\t thisGame.gameState.loopCounter = ' + thisGame.gameState.loopCounter);
 
         thisGame.gameState.lastLoopDiff = diffTime;
         thisGame.gameState.lastLoopTime = nowTime;
@@ -675,7 +675,7 @@
 
     // Define a function for drawing the field background
     function newCanvasSprite(filePath, frameWidth, frameHeight, frameLayout, frameSpeed, frameSequence){
-        debug('canvasGameEngine.newCanvasSprite(filePath, frameWidth, frameHeight, frameLayout, frameSpeed)', filePath, frameWidth, frameHeight, frameLayout, frameSpeed);
+        //console.log('canvasGameEngine.newCanvasSprite(filePath, frameWidth, frameHeight, frameLayout, frameSpeed, frameSequence)', filePath, frameWidth, frameHeight, frameLayout, frameSpeed, frameSequence);
 
         // Collect preloaded image from resource index
         var imageResource = resourceManager.getFile(filePath);
@@ -695,7 +695,7 @@
 
         // Generate a sequential frame sequence using count
         if (typeof frameSequence === 'undefined' || frameSequence.length < 1){
-            var frameSequence = [];
+            frameSequence = [];
             for (var i = 0; i < frameCount; i++){ frameSequence.push(i); }
             }
 

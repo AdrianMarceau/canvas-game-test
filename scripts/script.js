@@ -39,6 +39,7 @@ $(document).ready(function(){
     }
 
    //console.log('canvasGame.playerRobots = ', canvasGame.playerRobots);
+   //console.log('canvasGame.targetRobots = ', canvasGame.targetRobots);
 
    //console.log('canvasGame.gameSpriteIndex = ', canvasGame.gameSpriteIndex);
 
