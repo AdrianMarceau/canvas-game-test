@@ -27,7 +27,8 @@
             frameSpeed: 1,
             frameDirection: '',
             frameSequence: [0],
-            animationSteps: []
+            animationSteps: [],
+            frameSync: false
             },
         robotSprite: {
             filePath: 'images/robots/default/{kind}_{dir}_{size}.png',
@@ -40,7 +41,8 @@
             frameSpeed: 1,
             frameDirection: '',
             frameSequence: [0],
-            animationSteps: []
+            animationSteps: [],
+            frameSync: false
             }
         };
 

@@ -158,21 +158,19 @@
         var totalAnimationSteps = canvasSprite.animationSteps.length;
         var totalAnimationStepFrames = 0;
 
-        var syncKeyFramesToAnimationSteps = totalKeyFrames == totalAnimationSteps ? true : false;
-
         var spriteAnimationTimeline = [];
         for (var stepKey = 0; stepKey < totalAnimationSteps; stepKey++){
 
             var stepData = canvasSprite.animationSteps[stepKey];
             var stepRange = [];
-            var lastKey = stepKey + 1 >= totalAnimationSteps ? true : false;
+            var isLastKey = stepKey + 1 >= totalAnimationSteps ? true : false;
 
             stepRange.push(totalAnimationStepFrames + 1);
 
             var requiredAnimationFrames = Math.ceil(stepData.frameDuration * (1 / canvasSprite.frameSpeed) * thisGameSpeed);
             var newTotalAnimationFrames = totalAnimationStepFrames + requiredAnimationFrames;
-            if (lastKey
-                && syncKeyFramesToAnimationSteps
+            if (isLastKey
+                && canvasSprite.frameSequence == true
                 && newTotalAnimationFrames != totalKeyFrameDuration){
                 var frameDiff = newTotalAnimationFrames - totalKeyFrameDuration;
                 newTotalAnimationFrames -= frameDiff;

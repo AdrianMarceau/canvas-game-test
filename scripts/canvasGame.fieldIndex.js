@@ -26,6 +26,7 @@
             frameLayout: 'vertical',
             frameSequence: [],
             animationSteps: [],
+            frameSync: false
             },
         fieldForeground: {
             filePath: 'images/fields/default/foreground.png',
@@ -38,7 +39,8 @@
             frameSpeed: 1,
             frameLayout: 'vertical',
             frameSequence: [],
-            animationSteps: []
+            animationSteps: [],
+            frameSync: false
             }
         };
 

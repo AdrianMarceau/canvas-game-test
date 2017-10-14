@@ -789,7 +789,7 @@
     }
 
     // Define a function for drawing the field background
-    function newCanvasSprite(spriteKey, filePath, frameWidth, frameHeight, frameLayout, frameSpeed, frameSequence){
+    function newCanvasSprite(spriteKey, filePath, frameWidth, frameHeight, frameLayout, frameSpeed, frameSequence, frameSync){
         //console.log('canvasGameEngine.newCanvasSprite(filePath, frameWidth, frameHeight, frameLayout, frameSpeed, frameSequence)', filePath, frameWidth, frameHeight, frameLayout, frameSpeed, frameSequence);
 
         // Collect preloaded image from resource index
