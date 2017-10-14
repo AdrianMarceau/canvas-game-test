@@ -193,6 +193,10 @@
 
                 var xStart = stepData.startPosition[0];
                 var xEnd = stepData.endPosition[0];
+                if (typeof canvasSprite.frameDirection !== 'undefined' && canvasSprite.frameDirection == 'left'){
+                    xStart = xStart * -1;
+                    xEnd = xEnd * -1;
+                    }
                 var xDiff = xStart - xEnd;
                 var xProg = Math.ceil(xDiff * stepProgressMultiplier) * -1;
                 var xOffset = typeof spriteAnimationOffset[0] === 'function' ? spriteAnimationOffset[0]() : spriteAnimationOffset[0];

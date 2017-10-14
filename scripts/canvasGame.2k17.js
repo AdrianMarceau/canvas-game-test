@@ -57,7 +57,9 @@
     // Image Variables
     var gameImages = [
         'images/logo-large.png',
-        'images/logo-small.png'
+        'images/logo-small.png',
+        'images/robot-status_left.png',
+        'images/robot-status_right.png'
         ];
 
     // Sprite Variables
@@ -460,6 +462,10 @@
         var robotDirection = battleRobot.robotDirection;
         battleTeamRobots[robotKey] = cloneObject(battleRobot);
 
+        // Update the robot sprites' frame directions
+        battleTeamRobots[robotKey].robotMug.frameDirection = robotDirection;
+        battleTeamRobots[robotKey].robotSprite.frameDirection = robotDirection;
+
         // Define the robot image kinds, directions, and sizes
         var imageKinds = ['mug', 'sprite', 'shadow'];
         var imageDirections = ['left', 'right'];
@@ -545,6 +551,84 @@
             thisGame.gameSpriteIndex[spriteKey] = false;
             newBattleRobotSprite(battleTeam, robotKey, spriteKey);
             });
+
+
+
+        // Create the status bar icon for this robot
+        var statusSpriteKey = spriteKey + '/status';
+        var robotStatusSprite = {
+            filePath: 'images/robot-status_'+battleTeamRobots[robotKey].robotDirection+'.png',
+            basePosition: [0, 0, 0],
+            currentPosition: [0, 0, 0],
+            frameWidth: 36,
+            frameHeight: 78,
+            frameSpeed: 1,
+            frameLayout: 'vertical',
+            frameSequence: [0],
+            animationSteps: [{
+                // pan up
+                startPosition: [0, 0],
+                endPosition: [0, -5],
+                frameDuration: 30
+                }, {
+                // pan down
+                startPosition: [0, -5],
+                endPosition: [0, 0],
+                frameDuration: 30
+                }]
+            };
+        var statusPositionMod = function(){
+            var battleRobot = battleTeamRobots[robotKey];
+            var positionMod = battleRobot.robotDirection == 'left' ? 1 : -1;
+            return positionMod;
+        }
+        var statusPositionOffset = function(){
+            var battleRobot = battleTeamRobots[robotKey];
+            var positionMod = statusPositionMod();
+            var positionOffset = positionMod * Math.ceil(battleRobot.robotSprite.frameSize * 0.3);
+            return positionOffset;
+        };
+        var statusPositionX = function(){
+            var battleRobot = battleTeamRobots[robotKey];
+            var positionMod = statusPositionMod();
+            var positionX = battleRobot.robotSprite.currentPosition[0] + statusPositionOffset();
+            var overflowValue = battleRobot.robotSprite.frameSize - 80;
+            if (battleRobot.robotDirection == 'left'){
+                positionX += robotStatusSprite.frameWidth;
+            }
+            if (overflowValue > 0){
+                positionX += Math.ceil(overflowValue / 2);
+                positionX -= positionMod * Math.ceil(robotStatusSprite.frameWidth / 2);
+            }
+            //positionX -=
+            return positionX;
+        };
+        var statusPositionY = function(){
+            var battleRobot = battleTeamRobots[robotKey];
+            var positionMod = statusPositionMod();
+            var positionY = battleRobot.robotSprite.currentPosition[1] - 20;
+            var overflowValue = battleRobot.robotSprite.frameSize - 80;
+            if (overflowValue > 0){
+                positionY += overflowValue;
+            }
+            return positionY;
+        };
+        var statusPositionZ = function(){
+            var battleRobot = battleTeamRobots[robotKey];
+            var positionZ = battleRobot.robotSprite.currentPosition[2] + 1;
+            return positionZ;
+        };
+        robotStatusSprite.basePosition = [statusPositionX, statusPositionY, statusPositionZ];
+        robotStatusSprite.globalFrameStart = thisGame.gameState.currentFrame;
+        robotStatusSprite.spriteObject = newCanvasSprite(
+            robotStatusSprite.filePath,
+            robotStatusSprite.frameWidth,
+            robotStatusSprite.frameHeight,
+            robotStatusSprite.frameLayout,
+            robotStatusSprite.frameSpeed,
+            robotStatusSprite.frameSequence
+            );
+        thisGame.gameSpriteIndex[statusSpriteKey] = robotStatusSprite;
 
     }
 

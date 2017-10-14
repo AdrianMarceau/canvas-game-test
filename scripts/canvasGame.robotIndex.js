@@ -23,6 +23,7 @@
             frameLayout: 'horizontal',
             frameSize: 80,
             frameSpeed: 1,
+            frameDirection: '',
             frameSequence: [0],
             animationSteps: []
             },
@@ -33,6 +34,7 @@
             frameLayout: 'horizontal',
             frameSize: 80,
             frameSpeed: 1,
+            frameDirection: '',
             frameSequence: [0],
             animationSteps: []
             }
