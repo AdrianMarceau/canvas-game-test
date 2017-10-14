@@ -10,20 +10,23 @@
 
     var thisGame;
 
-    function gameSprite(url, pos, size, speed, frames, dir, once, game){
-        //console.log('gameSprite(url, pos, size, speed, frames, dir, once)\n', url, pos, size, speed, frames, dir, once);
+    function gameSprite(filePath, framePosition, frameWidth, frameHeight, frameSpeed, frameSequence, frameLayout, playOnce, gameObject, spritekey){
+        //console.log('gameSprite(filePath, framePosition, frameWidth, frameHeight, frameSpeed, frameSequence, frameLayout, playOnce)\n', filePath, framePosition, frameWidth, frameHeight, frameSpeed, frameSequence, frameLayout, playOnce);
 
         this._index = 0;
-        this.pos = pos;
-        this.size = size;
-        this.speed = typeof speed === 'number' ? speed : 0;
-        this.frames = frames;
-        this.url = url;
-        this.dir = dir || 'horizontal';
-        this.once = once;
+        this.framePosition = framePosition;
+        this.frameWidth = frameWidth;
+        this.frameHeight = frameHeight;
+        this.frameSpeed = typeof frameSpeed === 'number' ? frameSpeed : 0;
+        this.frameSequence = frameSequence;
+        this.filePath = filePath;
+        this.frameLayout = frameLayout || 'horizontal';
+        this.playOnce = playOnce;
 
         this.thisGame = thisGame;
-        thisGame = typeof game !== 'undefined' ? game : {};
+        thisGame = typeof gameObject !== 'undefined' ? gameObject : {};
+
+        this.spritekey = spritekey;
 
         if (typeof thisGame.gameState !== 'undefined'
             && typeof thisGame.gameState.currentFrame !== 'undefined'){
@@ -37,11 +40,7 @@
 
         update: function(dt){
 
-            /*
-
-            var speed = this.speed * (1 / thisGameSpeed);
-            this._index += speed * dt;
-            */
+            var thisSprite = thisGame.gameSpriteIndex[this.spritekey];
 
             if (typeof thisGame.gameSettings !== 'undefined'
                 && typeof thisGame.gameSettings.baseGameSpeed !== 'undefined'){
@@ -53,7 +52,7 @@
             if (typeof thisGame.gameState !== 'undefined'
                 && typeof thisGame.gameState.currentFrame !== 'undefined'){
                 var diff = thisGame.gameState.currentFrame - this.globalFrameStart;
-                var index = Math.floor((diff / 60) * this.speed * (1 / thisGameSpeed));
+                var index = Math.floor((diff / 60) * this.frameSpeed * (1 / thisGameSpeed));
                 this._index = index;
                 }
 
@@ -61,38 +60,56 @@
 
         render: function(ctx){
 
-            //console.log('thisGameSpeed = ', thisGameSpeed);
+            var thisSprite = thisGame.gameSpriteIndex[this.spritekey];
+            var frameKey;
 
-            var frame;
-
-            if (this.speed > 0){
-                var max = this.frames.length;
+            if (this.frameSpeed > 0){
+                var max = this.frameSequence.length;
                 var idx = Math.floor(this._index);
-                frame = this.frames[idx % max];
-                if (this.once && idx >= max){
+                frameKey = this.frameSequence[idx % max];
+                if (this.playOnce && idx >= max){
                     this.done = true;
                     return;
                     }
                 } else {
-                frame = 0;
+                frameKey = 0;
                 }
 
-            var x = this.pos[0];
-            var y = this.pos[1];
+            var x = this.framePosition[0];
+            var y = this.framePosition[1];
 
-            if (this.dir == 'vertical'){
-                y += frame * this.size[1];
+            if (this.frameLayout == 'vertical'){
+                y += frameKey * this.frameHeight;
                 } else {
-                x += frame * this.size[0];
+                x += frameKey * this.frameWidth;
                 }
 
-            var imgObj = resourceManager.getFile(this.url);
+            var imgObj = resourceManager.getFile(this.filePath);
             //console.log('typeof imgObj = ', typeof imgObj);
             if (typeof imgObj === 'object'){
+
+                var baseAlpha = 1;
+                var currentAlpha = 1;
+
+                if (this.filePath.indexOf('status') !== -1){
+                    //currentAlpha = 0.5;
+                }
+
+                if (typeof thisSprite.currentOpacity === 'function'){
+                    currentAlpha = thisSprite.currentOpacity();
+                    } else if (typeof thisSprite.currentOpacity !== 'undefined'){
+                    currentAlpha = thisSprite.currentOpacity;
+                    }
+
+                ctx.globalAlpha = currentAlpha;
+
                 ctx.drawImage(imgObj,
-                    x, y, this.size[0], this.size[1],
-                    0, 0, this.size[0], this.size[1]
+                    x, y, this.frameWidth, this.frameHeight,
+                    0, 0, this.frameWidth, this.frameHeight
                     );
+
+                ctx.globalAlpha = baseAlpha;
+
                 }
 
 

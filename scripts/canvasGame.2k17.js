@@ -560,6 +560,7 @@
             filePath: 'images/robot-status_'+battleTeamRobots[robotKey].robotDirection+'.png',
             basePosition: [0, 0, 0],
             currentPosition: [0, 0, 0],
+            //currentOpacity: robotToken == 'mega-man' ? 1 : 0.5,
             frameWidth: 36,
             frameHeight: 78,
             frameSpeed: 1,
@@ -621,6 +622,7 @@
         robotStatusSprite.basePosition = [statusPositionX, statusPositionY, statusPositionZ];
         robotStatusSprite.globalFrameStart = thisGame.gameState.currentFrame;
         robotStatusSprite.spriteObject = newCanvasSprite(
+            statusSpriteKey,
             robotStatusSprite.filePath,
             robotStatusSprite.frameWidth,
             robotStatusSprite.frameHeight,
@@ -633,7 +635,7 @@
     }
 
     // Define a function for generating and loading a robot sprite
-    function newBattleRobotSprite(battleTeam, robotKey, spriteKey){
+    function newBattleRobotSprite(battleTeam, robotKey, robotSpriteKey){
         //console.log('canvasGameEngine.newBattleRobotSprite()', battleTeam, robotKey, spriteKey);
 
         // Create a pointer to the appropriate team
@@ -645,6 +647,7 @@
         var playerRobotSprite = battleTeamRobots[robotKey].robotSprite;
         playerRobotSprite.globalFrameStart = thisGame.gameState.currentFrame;
         playerRobotSprite.spriteObject = newCanvasSprite(
+            robotSpriteKey,
             playerRobotSprite.filePath,
             playerRobotSprite.frameSize,
             playerRobotSprite.frameSize,
@@ -654,7 +657,7 @@
             );
 
         // Add generated field sprite to the parent index
-        thisGame.gameSpriteIndex[spriteKey] = playerRobotSprite;
+        thisGame.gameSpriteIndex[robotSpriteKey] = playerRobotSprite;
 
         // Refresh the sprite rendering order
         updateCanvasSpriteRenderOrder();
@@ -713,8 +716,10 @@
         thisGame.battleField.fieldBackground = fieldBackground;
 
         // Generate a new sprite for the field background
+        var spriteIndexKey = 'fieldBackground';
         fieldBackground.globalFrameStart = thisGame.gameState.currentFrame;
         fieldBackground.spriteObject = newCanvasSprite(
+            spriteIndexKey,
             fieldBackground.filePath,
             thisGame.gameSettings.baseBackgroundWidth,
             thisGame.gameSettings.baseBackgroundHeight,
@@ -724,7 +729,7 @@
             );
 
         // Add generated field sprite to the parent index
-        thisGame.gameSpriteIndex['fieldBackground'] = fieldBackground;
+        thisGame.gameSpriteIndex[spriteIndexKey] = fieldBackground;
 
         // Refresh the sprite rendering order
         updateCanvasSpriteRenderOrder();
@@ -739,8 +744,10 @@
         thisGame.battleField.fieldForeground = fieldForeground;
 
         // Generate a new sprite for the field foreground
+        var spriteIndexKey = 'fieldForeground';
         fieldForeground.globalFrameStart = thisGame.gameState.currentFrame;
         fieldForeground.spriteObject = newCanvasSprite(
+            spriteIndexKey,
             fieldForeground.filePath,
             thisGame.gameSettings.baseForegroundWidth,
             thisGame.gameSettings.baseForegroundHeight,
@@ -750,7 +757,7 @@
             );
 
         // Add generated field sprite to the parent index
-        thisGame.gameSpriteIndex['fieldForeground'] = fieldForeground;
+        thisGame.gameSpriteIndex[spriteIndexKey] = fieldForeground;
 
         // Refresh the sprite rendering order
         updateCanvasSpriteRenderOrder();
@@ -758,7 +765,7 @@
     }
 
     // Define a function for drawing the field background
-    function newCanvasSprite(filePath, frameWidth, frameHeight, frameLayout, frameSpeed, frameSequence){
+    function newCanvasSprite(spriteKey, filePath, frameWidth, frameHeight, frameLayout, frameSpeed, frameSequence){
         //console.log('canvasGameEngine.newCanvasSprite(filePath, frameWidth, frameHeight, frameLayout, frameSpeed, frameSequence)', filePath, frameWidth, frameHeight, frameLayout, frameSpeed, frameSequence);
 
         // Collect preloaded image from resource index
@@ -791,12 +798,14 @@
         return new gameSprite(
             filePath,
             framePosition,
-            frameSize,
+            frameWidth,
+            frameHeight,
             frameSpeed,
             frameSequence,
             frameLayout,
             false,
-            thisGame
+            thisGame,
+            spriteKey
             );
 
     }
