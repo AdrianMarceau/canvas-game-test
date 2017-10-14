@@ -21,7 +21,7 @@
             panelOffsetX: 0,
             panelOffsetY: 0,
             frameSpeed: 1,
-            frameLayout: 'veritcal',
+            frameLayout: 'vertical',
             frameSequence: [],
             animationSteps: [],
             },
@@ -32,7 +32,7 @@
             panelOffsetX: 0,
             panelOffsetY: 0,
             frameSpeed: 1,
-            frameLayout: 'veritcal',
+            frameLayout: 'vertical',
             frameSequence: [],
             animationSteps: []
             }
