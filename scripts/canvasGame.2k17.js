@@ -338,15 +338,23 @@
         //debug('\t thisGame.gameSettings.pauseGameLoop = ' + thisGame.gameSettings.pauseGameLoop);
         if (thisGame.gameSettings.pauseGameLoop == true){ return false; }
 
-        var nowTime = Date.now();
-        var diffTime = (nowTime - thisGame.gameState.lastLoopTime) / 1000.0;
+        var nowTime = performance.now() || Date.now();
+        //var diffTime = (nowTime - thisGame.gameState.lastLoopTime) / 1000.0;
+        var diffTime = nowTime - thisGame.gameState.lastLoopTime;
 
+        var requiredTime = 1000.0 / thisGame.gameSettings.baseFramesPerSecond;
+
+        //console.log('---------');
         //console.log('\t thisGame.gameState.loopCounter = ' + thisGame.gameState.loopCounter);
+        //console.log('\t thisGame.gameSettings.baseFramesPerSecond = ' + thisGame.gameSettings.baseFramesPerSecond);
         //console.log('\t nowTime = ' + nowTime);
         //console.log('\t thisGame.gameState.lastLoopTime = ' + thisGame.gameState.lastLoopTime);
         //console.log('\t diffTime = ' + diffTime);
+        //console.log('\t requiredTime = ' + requiredTime);
 
-        if (diffTime >= (1 / thisGame.gameSettings.baseFramesPerSecond)){
+        if (Math.ceil(diffTime) >= Math.floor(requiredTime)){
+
+            //console.log('\t render!');
 
             updateGameCanvas();
             renderGameCanvas();
@@ -364,6 +372,8 @@
             requestAnimFrame(mainGameLoop);
 
         } else {
+
+            //console.log('\t don\'t render!');
 
             requestAnimFrame(mainGameLoop);
 
@@ -1096,15 +1106,33 @@
 
         // Define the base positions for all cells on the battlefield
         var positionMap = {};
-        positionMap['A1'] = [320, pos1Y];
-        positionMap['A2'] = [350, pos2Y];
-        positionMap['A3'] = [380, pos3Y];
-        positionMap['B1'] = [195, pos1Y];
-        positionMap['B2'] = [210, pos2Y];
-        positionMap['B3'] = [225, pos3Y];
-        positionMap['C1'] = [65, pos1Y];
-        positionMap['C2'] = [70, pos2Y];
-        positionMap['C3'] = [75, pos3Y];
+
+        positionMap['A1'] = [320, pos1Y]; // x + 0
+        positionMap['A2'] = [350, pos2Y]; // x + 30
+        positionMap['A3'] = [380, pos3Y]; // x + 30
+
+        positionMap['B1'] = [195, pos1Y]; // x + 0
+        positionMap['B2'] = [210, pos2Y]; // x + 15
+        positionMap['B3'] = [225, pos3Y]; // x + 15
+
+        positionMap['C1'] = [65, pos1Y];  // x + 0
+        positionMap['C2'] = [70, pos2Y];  // x + 5
+        positionMap['C3'] = [75, pos3Y];  // x + 5
+
+        /*
+
+        positionMap['A1'] = [320, pos1Y]; // x + 0
+        positionMap['A2'] = [360, pos2Y]; // x + 40
+        positionMap['A3'] = [400, pos3Y]; // x + 40
+
+        positionMap['B1'] = [195, pos1Y]; // x + 0
+        positionMap['B2'] = [215, pos2Y]; // x + 20
+        positionMap['B3'] = [235, pos3Y]; // x + 20
+
+        positionMap['C1'] = [65, pos1Y];  // x + 0
+        positionMap['C2'] = [75, pos2Y];  // x + 10
+        positionMap['C3'] = [85, pos3Y];  // x + 10
+        */
 
         // Collect the current robot position based on cell key
         var robotCellPosition = positionMap[cellKey];
