@@ -41,20 +41,10 @@
         update: function(dt){
 
             var thisSprite = thisGame.gameSpriteIndex[this.spritekey];
-
-            if (typeof thisGame.gameSettings !== 'undefined'
-                && typeof thisGame.gameSettings.baseGameSpeed !== 'undefined'){
-                var thisGameSpeed = thisGame.gameSettings.baseGameSpeed;
-                } else {
-                var thisGameSpeed = 1;
-                }
-
-            if (typeof thisGame.gameState !== 'undefined'
-                && typeof thisGame.gameState.currentFrame !== 'undefined'){
-                var diff = thisGame.gameState.currentFrame - this.globalFrameStart;
-                var index = Math.floor((diff / 60) * this.frameSpeed * (1 / thisGameSpeed));
-                this._index = index;
-                }
+            var thisGameSpeed = thisGame.gameSettings.baseGameSpeed;
+            var diff = thisGame.gameState.currentFrame - this.globalFrameStart;
+            var index = Math.floor((diff / thisGame.gameSettings.baseFramesPerSecond) * this.frameSpeed * (1 / thisGameSpeed));
+            this._index = index;
 
             },
 
@@ -162,21 +152,42 @@
 
         //console.log('\t currentRelativeFrame = ', currentRelativeFrame);
 
-        var totalAnimationFrames = 0;
+        var totalKeyFrames = canvasSprite.frameSequence.length;
+        var totalKeyFrameDuration = totalKeyFrames * thisGame.gameSettings.baseFramesPerSecond;
+
+        var totalAnimationSteps = canvasSprite.animationSteps.length;
+        var totalAnimationStepFrames = 0;
+
+        var syncKeyFramesToAnimationSteps = totalKeyFrames == totalAnimationSteps ? true : false;
+
         var spriteAnimationTimeline = [];
-        for (var stepKey = 0; stepKey < canvasSprite.animationSteps.length; stepKey++){
+        for (var stepKey = 0; stepKey < totalAnimationSteps; stepKey++){
+
             var stepData = canvasSprite.animationSteps[stepKey];
             var stepRange = [];
-            stepRange.push(totalAnimationFrames + 1);
-            totalAnimationFrames += Math.ceil(stepData.frameDuration * (1 / canvasSprite.frameSpeed) * thisGameSpeed);
-            stepRange.push(totalAnimationFrames);
+            var lastKey = stepKey + 1 >= totalAnimationSteps ? true : false;
+
+            stepRange.push(totalAnimationStepFrames + 1);
+
+            var requiredAnimationFrames = Math.ceil(stepData.frameDuration * (1 / canvasSprite.frameSpeed) * thisGameSpeed);
+            var newTotalAnimationFrames = totalAnimationStepFrames + requiredAnimationFrames;
+            if (lastKey
+                && syncKeyFramesToAnimationSteps
+                && newTotalAnimationFrames != totalKeyFrameDuration){
+                var frameDiff = newTotalAnimationFrames - totalKeyFrameDuration;
+                newTotalAnimationFrames -= frameDiff;
+            }
+            totalAnimationStepFrames = newTotalAnimationFrames;
+
+            stepRange.push(totalAnimationStepFrames);
             spriteAnimationTimeline.push(stepRange);
+
             }
 
-        //console.log('\t totalAnimationFrames = ', totalAnimationFrames);
+        //console.log('\t totalAnimationStepFrames = ', totalAnimationStepFrames);
         //console.log('\t spriteAnimationTimeline = ', spriteAnimationTimeline);
 
-        var spriteAnimationFrame = (currentRelativeFrame % totalAnimationFrames) + 1;
+        var spriteAnimationFrame = (currentRelativeFrame % totalAnimationStepFrames) + 1;
         //console.log('\t spriteAnimationFrame = ', spriteAnimationFrame);
 
         var spriteAnimationOffset = typeof canvasSprite.basePosition != 'undefined' ? canvasSprite.basePosition : [0, 0];

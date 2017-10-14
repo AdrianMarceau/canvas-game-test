@@ -37,6 +37,7 @@
         baseForegroundWidth: 1124,
         baseForegroundHeight: 248,
         baseGameSpeed: 1,
+        baseFramesPerSecond: 60,
         autoGameLoop: true,
         pauseGameLoop: false,
         showDebug: false
@@ -340,20 +341,33 @@
         var nowTime = Date.now();
         var diffTime = (nowTime - thisGame.gameState.lastLoopTime) / 1000.0;
 
-        updateGameCanvas();
-        renderGameCanvas();
+        //console.log('\t thisGame.gameState.loopCounter = ' + thisGame.gameState.loopCounter);
+        //console.log('\t nowTime = ' + nowTime);
+        //console.log('\t thisGame.gameState.lastLoopTime = ' + thisGame.gameState.lastLoopTime);
+        //console.log('\t diffTime = ' + diffTime);
 
-        thisGame.gameState.loopCounter++;
-        thisGame.gameState.currentFrame = thisGame.gameState.loopCounter + 1;
-        //debug('\t thisGame.gameState.loopCounter = ' + thisGame.gameState.loopCounter);
+        if (diffTime >= (1 / thisGame.gameSettings.baseFramesPerSecond)){
 
-        thisGame.gameState.lastLoopDiff = diffTime;
-        thisGame.gameState.lastLoopTime = nowTime;
+            updateGameCanvas();
+            renderGameCanvas();
 
-        //debug('\t thisGame.gameSettings.autoGameLoop = ' + thisGame.gameSettings.autoGameLoop);
-        if (thisGame.gameSettings.autoGameLoop == false){ return false; }
+            thisGame.gameState.loopCounter++;
+            thisGame.gameState.currentFrame = thisGame.gameState.loopCounter + 1;
+            //debug('\t thisGame.gameState.loopCounter = ' + thisGame.gameState.loopCounter);
 
-        requestAnimFrame(mainGameLoop);
+            thisGame.gameState.lastLoopDiff = diffTime;
+            thisGame.gameState.lastLoopTime = nowTime;
+
+            //debug('\t thisGame.gameSettings.autoGameLoop = ' + thisGame.gameSettings.autoGameLoop);
+            if (thisGame.gameSettings.autoGameLoop == false){ return false; }
+
+            requestAnimFrame(mainGameLoop);
+
+        } else {
+
+            requestAnimFrame(mainGameLoop);
+
+        }
 
     }
 
