@@ -138,12 +138,12 @@
         }
 
         // If no animation steps were defined, we can return the base position as-is
-        if (typeof canvasSprite.animationSteps === 'undefined'
-            || canvasSprite.animationSteps.length < 1){
-            //console.log('canvasSprite.animationSteps is undefined or empty');
+        if (typeof canvasSprite.frameAnimationSequence === 'undefined'
+            || canvasSprite.frameAnimationSequence.length < 1){
+            //console.log('canvasSprite.frameAnimationSequence is undefined or empty');
             return basePosition;
         }
-        //console.log('\t canvasSprite.animationSteps = ', canvasSprite.animationSteps);
+        //console.log('\t canvasSprite.frameAnimationSequence = ', canvasSprite.frameAnimationSequence);
 
         //console.log('\t currentGlobalFame = ', currentGlobalFame);
 
@@ -164,13 +164,13 @@
         var totalKeyFrames = canvasSprite.frameSequence.length;
         var totalKeyFrameDuration = totalKeyFrames * thisGame.gameSettings.baseFramesPerSecond; // * thisSpriteSpeed;
 
-        var totalAnimationSteps = canvasSprite.animationSteps.length;
+        var totalAnimationSteps = canvasSprite.frameAnimationSequence.length;
         var totalAnimationStepFrames = 0;
 
         var spriteAnimationTimeline = [];
         for (var stepKey = 0; stepKey < totalAnimationSteps; stepKey++){
 
-            var stepData = canvasSprite.animationSteps[stepKey];
+            var stepData = canvasSprite.frameAnimationSequence[stepKey];
             var stepRange = [];
             var isLastKey = stepKey + 1 >= totalAnimationSteps ? true : false;
 
@@ -207,7 +207,7 @@
         var currentSpritePosition = [0, 0, 0];
         var stepKey;
         for (stepKey = 0; stepKey < spriteAnimationTimeline.length; stepKey++){
-            var stepData = canvasSprite.animationSteps[stepKey];
+            var stepData = canvasSprite.frameAnimationSequence[stepKey];
             var stepRange = spriteAnimationTimeline[stepKey];
             //console.log('\t stepKey = ', stepKey);
             //console.log('\t stepData = ', stepData);

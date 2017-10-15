@@ -590,7 +590,7 @@
             frameSpeed: 1,
             frameLayout: 'vertical',
             frameSequence: [0],
-            animationSteps: [{
+            frameAnimationSequence: [{
                 // pan up
                 startPosition: [0, 0],
                 endPosition: [0, -5],
@@ -891,10 +891,10 @@
 
             // Backup the animation steps before mods
             var backupAnimationSteps = [];
-            if (typeof thisSprite.animationSteps !== 'undefined'
-                && thisSprite.animationSteps.length > 0){
-                for (i in thisSprite.animationSteps){
-                    backupAnimationSteps.push(thisSprite.animationSteps[i]);
+            if (typeof thisSprite.frameAnimationSequence !== 'undefined'
+                && thisSprite.frameAnimationSequence.length > 0){
+                for (i in thisSprite.frameAnimationSequence){
+                    backupAnimationSteps.push(thisSprite.frameAnimationSequence[i]);
                     }
 
                 }
@@ -920,15 +920,15 @@
 
                     var targetSprite = thisGame.gameSpriteIndex[thisSprite.animateWithTarget];
 
-                    if (typeof targetSprite.animationSteps !== 'undefined'
-                        && targetSprite.animationSteps.length > 0){
+                    if (typeof targetSprite.frameAnimationSequence !== 'undefined'
+                        && targetSprite.frameAnimationSequence.length > 0){
                         thisSprite.globalFrameStart = targetSprite.globalFrameStart;
-                        thisSprite.animationSteps = [];
-                        for (i in targetSprite.animationSteps){
-                            thisSprite.animationSteps.push(targetSprite.animationSteps[i]);
+                        thisSprite.frameAnimationSequence = [];
+                        for (i in targetSprite.frameAnimationSequence){
+                            thisSprite.frameAnimationSequence.push(targetSprite.frameAnimationSequence[i]);
                             }
                         } else {
-                        thisSprite.animationSteps = [];
+                        thisSprite.frameAnimationSequence = [];
                         }
 
                     }
@@ -945,10 +945,10 @@
             thisSprite.basePosition = backupBasePosition;
 
             // Restore the sprite's animation steps back to normal
-            thisSprite.animationSteps = [];
+            thisSprite.frameAnimationSequence = [];
             if (backupAnimationSteps.length > 0){
                 for (i in backupAnimationSteps){
-                    thisSprite.animationSteps.push(backupAnimationSteps[i]);
+                    thisSprite.frameAnimationSequence.push(backupAnimationSteps[i]);
                     }
                 }
 

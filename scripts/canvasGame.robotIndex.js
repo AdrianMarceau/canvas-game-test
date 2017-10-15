@@ -27,7 +27,7 @@
             frameSpeed: 1,
             frameDirection: '',
             frameSequence: [0],
-            animationSteps: [],
+            frameAnimationSequence: [],
             frameSync: false
             },
         robotSprite: {
@@ -41,7 +41,7 @@
             frameSpeed: 1,
             frameDirection: '',
             frameSequence: [0],
-            animationSteps: [],
+            frameAnimationSequence: [],
             frameSync: false
             }
         };

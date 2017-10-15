@@ -8,7 +8,7 @@ battleFieldIndex.indexField({
         basePosition: [-80, 0],
         frameSpeed: 1,
         frameLayout: 'vertical',
-        animationSteps: [{
+        frameAnimationSequence: [{
             // pan right
             startPosition: [+80, 0],
             endPosition: [-80, 0],
@@ -26,7 +26,7 @@ battleFieldIndex.indexField({
         panelOffsetY: 0,
         frameSpeed: 1,
         frameLayout: 'vertical',
-        animationSteps: [{
+        frameAnimationSequence: [{
             // pan down
             startPosition: [0, -2],
             endPosition: [0, +2],

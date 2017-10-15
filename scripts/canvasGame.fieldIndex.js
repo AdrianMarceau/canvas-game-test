@@ -25,7 +25,7 @@
             frameSpeed: 1,
             frameLayout: 'vertical',
             frameSequence: [],
-            animationSteps: [],
+            frameAnimationSequence: [],
             frameSync: false
             },
         fieldForeground: {
@@ -39,7 +39,7 @@
             frameSpeed: 1,
             frameLayout: 'vertical',
             frameSequence: [],
-            animationSteps: [],
+            frameAnimationSequence: [],
             frameSync: false
             }
         };
