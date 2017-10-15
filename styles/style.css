@@ -130,6 +130,13 @@ body > .wrapper {
 }
 
 
+.game .buttons {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
 .game .buttons .button {
     display: inline-block;
     padding: 3px 6px;
@@ -140,7 +147,7 @@ body > .wrapper {
     cursor: pointer;
 }
 .game .buttons .button:hover {
-    background-color: #2f2f2f;
+    background-color: #3b3b3b;
 }
 .game.loading .buttons .button {
     opacity: 0.9;
@@ -154,3 +161,14 @@ body > .wrapper {
     background-color: red;
 }
 
+
+
+/* -- NO CONSOLE MODE -- */
+
+.game.no-console .console {
+    display: none;
+}
+.game.no-console .buttons:before {
+  padding-bottom: 34.5114%;
+  padding-bottom: calc((332 / 962) * 100%);
+}
