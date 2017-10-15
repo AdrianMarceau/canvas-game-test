@@ -112,11 +112,8 @@
         var defaultSettings = gameSettings;
 
         // Create settings by extending defaults with the passed in arugments
-        if (arguments[0] && typeof arguments[0] === "object") {
-            thisGame.gameSettings = extendSettings(defaultSettings, arguments[0]);
-            } else {
-            thisGame.gameSettings = defaultSettings;
-            }
+        var customSettings = arguments[0] && typeof arguments[0] === "object" ? arguments[0] : {};
+        thisGame.gameSettings = extendSettings(defaultSettings, customSettings);
 
         // Initialize the game engine with callback if provided
         var readyCallback = typeof arguments[1] === 'function' ? arguments[1] : function(){};
@@ -148,7 +145,35 @@
     canvasGameEngine.prototype.startGame = function(startCallback){
         debug('canvasGameEngine.startGame()', startCallback);
 
-        // Load required image files and then start the game
+        // If the field has not been set, fallback to detail
+        if (typeof thisGame.battleField.fieldName === 'undefined'
+            || typeof thisGame.battleField.fieldBackground === 'undefined'
+            || typeof thisGame.battleField.fieldForeground === 'undefined'){
+            if (typeof thisGame.gameSettings.baseFieldToken !== 'undefined'){
+                var baseBattleField = thisGame.gameSettings.baseFieldToken;
+                thisGame.setBattleField(baseBattleField);
+                } else {
+                thisGame.setBattleField('default');
+                }
+            }
+
+        // If the base robots have been defined, loop through and add them
+        if (typeof thisGame.gameSettings.baseBattleRobots !== 'undefined'){
+            var baseBattleRobots = thisGame.gameSettings.baseBattleRobots;
+            var battleTeamKey = 0;
+            for (var battleTeam in baseBattleRobots){
+                var battleTeamRobots = baseBattleRobots[battleTeam];
+                var battleTeamSide = battleTeamKey === 0 ? 'left' : 'right';
+                for (var robotKey in battleTeamRobots){
+                    var robotToken = battleTeamRobots[robotKey][0];
+                    var robotPosition = battleTeamRobots[robotKey][1];
+                    thisGame.loadBattleRobot(battleTeam, robotKey, robotToken, robotPosition, battleTeamSide);
+                    }
+                battleTeamKey++;
+                }
+            }
+
+        // Now we can load required image files then start the game when complete
         resourceManager.loadFiles(thisGame.gameImages, function(){
             //console.log('resourceManager.loadFiles() complete!', thisGame.gameImages);
 

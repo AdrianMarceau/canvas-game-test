@@ -94,17 +94,17 @@ $cache_timestamp = '2017-10-14B';
     <script type="text/javascript">
 
         // Update variables for this test instance
-        battleConfig.fieldToken = 'default';
+        battleConfig.baseFieldToken = 'default';
 
         // Define default player robots for the game
-        battleConfig.battleRobots.thisTeam = [
+        battleConfig.baseBattleRobots.thisTeam = [
             ['default', 'C2'],
             ['default', 'B1'],
             ['default', 'B3']
             ];
 
         // Define default target robots for the game
-        battleConfig.battleRobots.targetTeam = [
+        battleConfig.baseBattleRobots.targetTeam = [
             ['default', 'C2'],
             ['default', 'B1'],
             ['default', 'B3']
