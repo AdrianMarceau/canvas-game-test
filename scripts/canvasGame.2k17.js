@@ -796,6 +796,7 @@
             robotEnergySprite.frameSequence
             );
         thisGame.gameSpriteIndex[energySpriteKey] = robotEnergySprite;
+        updateCanvasSpriteRenderOrder()
 
     }
 
