@@ -47,6 +47,8 @@
     function getFile(fileURL){
         //console.log('resourceManager.getFile(fileURL)', fileURL);
         //console.log('\t resourceIndex = ', resourceIndex);
+        //console.log('\t typeof resourceIndex['+fileURL+'] = ', typeof resourceIndex[fileURL]);
+        //console.log('\t fileURL in resourceIndex = ', fileURL in resourceIndex);
 
         if (typeof fileURL !== 'string'){ return false; }
 
@@ -110,7 +112,7 @@
                 }
             };
 
-        resourceIndex[fileURL] = false;
+        //resourceIndex[fileURL] = false;
         imageFile.src = fileURL;
 
     }
@@ -140,7 +142,7 @@
                     }
                 };
 
-            resourceIndex[fileURL] = false;
+            //resourceIndex[fileURL] = false;
             imageFiles.push(imageFile);
 
             }

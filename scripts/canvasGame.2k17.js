@@ -494,6 +494,78 @@
         // Load the field foreground sprite
         loadFieldForegroundSprite(thisGame.battleField.fieldForeground);
 
+        resourceManager.loadFile('images/operator-status_left.png', function(){
+
+            var positionX = 4;
+            var positionY = 4;
+
+            var energySpriteKey = 'thisTeam/operators/energy';
+            var operatorEnergySprite = {
+                filePath: 'images/operator-status_left.png',
+                basePosition: [positionX, positionY, 2000],
+                currentPosition: [positionX, positionY, 2000],
+                frameWidth: 150,
+                frameHeight: 50,
+                frameSpeed: 1,
+                frameLayout: 'vertical',
+                frameDirection: 'right',
+                frameSequence: [0],
+                frameAnimationSequence: [],
+                frameSync: false
+                };
+            operatorEnergySprite.globalFrameStart = thisGame.gameState.currentFrame;
+            operatorEnergySprite.currentFrameKey = 0;
+            operatorEnergySprite.spriteObject = newCanvasSprite(
+                energySpriteKey,
+                operatorEnergySprite.filePath,
+                operatorEnergySprite.frameWidth,
+                operatorEnergySprite.frameHeight,
+                operatorEnergySprite.frameLayout,
+                operatorEnergySprite.frameSpeed,
+                operatorEnergySprite.frameSequence,
+                operatorEnergySprite.frameSync
+                );
+            thisGame.gameSpriteIndex[energySpriteKey] = operatorEnergySprite;
+            updateCanvasSpriteRenderOrder();
+
+            });
+
+        resourceManager.loadFile('images/operator-status_right.png', function(){
+
+            var positionX = thisGame.gameState.canvasWidth - 150 - 4;
+            var positionY = 4;
+
+            var energySpriteKey = 'targetTeam/operators/energy';
+            var operatorEnergySprite = {
+                filePath: 'images/operator-status_right.png',
+                basePosition: [positionX, positionY, 2000],
+                currentPosition: [positionX, positionY, 2000],
+                frameWidth: 150,
+                frameHeight: 50,
+                frameSpeed: 1,
+                frameLayout: 'vertical',
+                frameDirection: 'left',
+                frameSequence: [0],
+                frameAnimationSequence: [],
+                frameSync: false
+                };
+            operatorEnergySprite.globalFrameStart = thisGame.gameState.currentFrame;
+            operatorEnergySprite.currentFrameKey = 0;
+            operatorEnergySprite.spriteObject = newCanvasSprite(
+                energySpriteKey,
+                operatorEnergySprite.filePath,
+                operatorEnergySprite.frameWidth,
+                operatorEnergySprite.frameHeight,
+                operatorEnergySprite.frameLayout,
+                operatorEnergySprite.frameSpeed,
+                operatorEnergySprite.frameSequence,
+                operatorEnergySprite.frameSync
+                );
+            thisGame.gameSpriteIndex[energySpriteKey] = operatorEnergySprite;
+            updateCanvasSpriteRenderOrder();
+
+            });
+
     }
 
 
@@ -599,7 +671,7 @@
         var robotSpriteKey = battleTeam + '/robots/' + robotKey;
         resourceManager.loadFiles(robotImageURLs, function(){
             //console.log('\t '+battleTeam+' robot sprites are loaded for robotSpriteKey "'+robotSpriteKey+'"!', robotImageURLs);
-            thisGame.gameSpriteIndex[robotSpriteKey] = false;
+            //thisGame.gameSpriteIndex[robotSpriteKey] = false;
             newBattleRobotSprite(battleTeam, robotKey, robotSpriteKey);
             newBattleRobotEnergySprite(battleTeam, robotKey, robotSpriteKey);
             });
@@ -645,8 +717,8 @@
         var battleTeamRobots = thisGame.battleRobots[battleTeam];
 
         // Create the status bar icon for this robot
-        var statusSpriteKey = robotSpriteKey + '/status';
-        var robotStatusSprite = {
+        var energySpriteKey = robotSpriteKey + '/energy';
+        var robotEnergySprite = {
             filePath: 'images/robot-status_'+battleTeamRobots[robotKey].robotDirection+'.png',
             basePosition: [0, 0, 0],
             currentPosition: [0, 0, 0],
@@ -679,7 +751,7 @@
             var positionOffset = positionMod * Math.ceil(battleRobot.robotSprite.frameSize * 0.5);
             if (overflowValue > 0){
                 positionOffset -= Math.ceil(overflowValue / 4) * positionMod;
-                //positionOffset -= positionMod * Math.ceil(robotStatusSprite.frameWidth / 2);
+                //positionOffset -= positionMod * Math.ceil(robotEnergySprite.frameWidth / 2);
             }
             return positionOffset;
         };
@@ -688,10 +760,10 @@
             var positionMod = statusPositionMod();
             var positionX = battleRobot.robotSprite.currentPosition[0] + statusPositionOffset();
             var overflowValue = battleRobot.robotSprite.frameSize - 80;
-            positionX += robotStatusSprite.frameWidth;
+            positionX += robotEnergySprite.frameWidth;
             if (overflowValue > 0){
                 positionX += Math.ceil(overflowValue / 2);
-                positionX -= positionMod * Math.ceil(robotStatusSprite.frameWidth / 2);
+                positionX -= positionMod * Math.ceil(robotEnergySprite.frameWidth / 2);
             }
             //positionX -=
             return positionX;
@@ -711,19 +783,19 @@
             var positionZ = battleRobot.robotSprite.currentPosition[2] + 1;
             return positionZ;
         };
-        robotStatusSprite.basePosition = [statusPositionX, statusPositionY, statusPositionZ];
-        robotStatusSprite.globalFrameStart = thisGame.gameState.currentFrame;
-        robotStatusSprite.currentFrameKey = 0;
-        robotStatusSprite.spriteObject = newCanvasSprite(
-            statusSpriteKey,
-            robotStatusSprite.filePath,
-            robotStatusSprite.frameWidth,
-            robotStatusSprite.frameHeight,
-            robotStatusSprite.frameLayout,
-            robotStatusSprite.frameSpeed,
-            robotStatusSprite.frameSequence
+        robotEnergySprite.basePosition = [statusPositionX, statusPositionY, statusPositionZ];
+        robotEnergySprite.globalFrameStart = thisGame.gameState.currentFrame;
+        robotEnergySprite.currentFrameKey = 0;
+        robotEnergySprite.spriteObject = newCanvasSprite(
+            energySpriteKey,
+            robotEnergySprite.filePath,
+            robotEnergySprite.frameWidth,
+            robotEnergySprite.frameHeight,
+            robotEnergySprite.frameLayout,
+            robotEnergySprite.frameSpeed,
+            robotEnergySprite.frameSequence
             );
-        thisGame.gameSpriteIndex[statusSpriteKey] = robotStatusSprite;
+        thisGame.gameSpriteIndex[energySpriteKey] = robotEnergySprite;
 
     }
 
@@ -789,7 +861,8 @@
             thisGame.gameSettings.baseBackgroundHeight,
             fieldBackground.frameLayout,
             fieldBackground.frameSpeed,
-            fieldBackground.frameSequence
+            fieldBackground.frameSequence,
+            fieldBackground.frameSync
             );
 
         // Add generated field sprite to the parent index
@@ -818,7 +891,8 @@
             thisGame.gameSettings.baseForegroundHeight,
             fieldForeground.frameLayout,
             fieldForeground.frameSpeed,
-            fieldForeground.frameSequence
+            fieldForeground.frameSequence,
+            fieldForeground.frameSync
             );
 
         // Add generated field sprite to the parent index
@@ -835,18 +909,23 @@
 
         // Collect preloaded image from resource index
         var imageResource = resourceManager.getFile(filePath);
-        //console.log('\t imageResource.url = ', imageResource.url);
+        //console.log('\t imageResource = ', imageResource);
+        //console.log('\t imageResource.src = ', imageResource.src);
+        //console.log('\t imageResource.width = ', imageResource.width);
+        //console.log('\t imageResource.height = ', imageResource.height);
 
         // Pull the image's actual width and height
-        var imageWidth = imageResource.width;
-        var imageHeight = imageResource.height;
+        var imageWidth = imageResource.width || frameWidth;
+        var imageHeight = imageResource.height || frameHeight;
         //console.log('\t imageWidth = ', imageWidth);
         //console.log('\t imageHeight = ', imageHeight);
 
         // Use frame layout to calculate total frames
         var frameCount = 1;
-        if (frameLayout == 'vertical'){ frameCount = Math.ceil(imageHeight / frameHeight); }
-        else if (frameLayout == 'horizontal'){ frameCount = Math.ceil(imageWidth / frameWidth); }
+        if (imageResource !== false){
+            if (frameLayout == 'vertical'){ frameCount = Math.ceil(imageHeight / frameHeight); }
+            else if (frameLayout == 'horizontal'){ frameCount = Math.ceil(imageWidth / frameWidth); }
+            }
         //console.log('\t frameCount = ', frameCount);
 
         // Generate a sequential frame sequence using count
@@ -854,10 +933,10 @@
             frameSequence = [];
             for (var i = 0; i < frameCount; i++){ frameSequence.push(i); }
             }
+        //console.log('\t frameSequence = ', frameSequence);
 
         // Define other frame variables needed for the sprite
         var framePosition = [0, 0];
-        var frameSize = [frameWidth, frameHeight];
 
         // Return a new sprite object using above settings
         return new gameSprite(
@@ -1006,6 +1085,9 @@
         thisGame.gameSpriteRenderOrder = [];
         for (var spriteKey in thisGame.gameSpriteIndex){
             var thisSprite = thisGame.gameSpriteIndex[spriteKey];
+
+            //console.log('\t RenderOrder / thisGame.gameSpriteIndex['+spriteKey+'] = ', thisGame.gameSpriteIndex[spriteKey]);
+
             if (typeof thisSprite !== 'undefined' && thisSprite !== false){
                 thisGame.gameSpriteRenderOrder.push(spriteKey);
 
@@ -1014,7 +1096,7 @@
             }
         }
 
-        //console.log('\t orderDebug = ', orderDebug);
+        //console.log('\t RenderOrder / orderDebug = ', orderDebug);
 
         // Recalculate and update the global draw order based on each sprite's Z-index value
         //console.log('\t thisGame.gameSpriteRenderOrder(before) = ', thisGame.gameSpriteRenderOrder);
@@ -1026,7 +1108,7 @@
             else if (spriteA.currentPosition[2] > spriteB.currentPosition[2]){ return 1; }
             else { return 0; }
             });
-        //console.log('\t thisGame.gameSpriteRenderOrder(after) = ', thisGame.gameSpriteRenderOrder);
+        //console.log('\t RenderOrder / thisGame.gameSpriteRenderOrder(after) = ', thisGame.gameSpriteRenderOrder);
 
     }
 
