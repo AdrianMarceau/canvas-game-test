@@ -14,10 +14,11 @@
         //console.log('gameSprite(filePath, framePosition, frameWidth, frameHeight, frameSpeed, frameSequence, frameLayout, playOnce)\n', filePath, framePosition, frameWidth, frameHeight, frameSpeed, frameSequence, frameLayout, playOnce);
 
         this._index = 0;
+        this.frameKey = 0;
         this.framePosition = framePosition;
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;
-        this.frameSpeed = typeof frameSpeed === 'number' ? frameSpeed : 0;
+        this.frameSpeed = typeof frameSpeed === 'number' ? frameSpeed : 1;
         this.frameSequence = frameSequence;
         this.filePath = filePath;
         this.frameLayout = frameLayout || 'horizontal';
@@ -41,9 +42,17 @@
         update: function(dt){
 
             var thisSprite = thisGame.gameSpriteIndex[this.spritekey];
+
             var thisGameSpeed = thisGame.gameSettings.baseGameSpeed;
-            var diff = thisGame.gameState.currentFrame - this.globalFrameStart;
-            var index = Math.floor((diff / thisGame.gameSettings.baseFramesPerSecond) * this.frameSpeed * (1 / thisGameSpeed));
+            var thisSpriteSpeed = thisSprite.frameSpeed * thisGameSpeed;
+
+            this.frameKey += (1 / thisSpriteSpeed);
+            thisSprite.currentFrameKey = this.frameKey;
+
+            var thisFramesPerSecond = thisGame.gameSettings.baseFramesPerSecond;
+
+            var index = Math.floor(this.frameKey / thisFramesPerSecond) % this.frameSequence.length;
+
             this._index = index;
 
             },
@@ -111,12 +120,8 @@
     gameSprite.getSpritePosition = function(currentGlobalFame, canvasSprite){
         //console.log('getCurrentSpritePosition(currentGlobalFame, canvasSprite)', currentGlobalFame, canvasSprite);
 
-        if (typeof thisGame.gameSettings !== 'undefined'
-            && typeof thisGame.gameSettings.baseGameSpeed !== 'undefined'){
-            var thisGameSpeed = thisGame.gameSettings.baseGameSpeed;
-        } else {
-            var thisGameSpeed = 1;
-        }
+        var thisGameSpeed = thisGame.gameSettings.baseGameSpeed;
+        //var thisSpriteSpeed = canvasSprite.frameSpeed * thisGameSpeed;
 
         //console.log('thisGameSpeed = ', thisGameSpeed);
 
@@ -144,16 +149,20 @@
 
         //console.log('\t canvasSprite.globalFrameStart = ', canvasSprite.globalFrameStart);
 
+        /*
         if (currentGlobalFame != canvasSprite.globalFrameStart){
             var currentRelativeFrame = currentGlobalFame - canvasSprite.globalFrameStart;
         } else {
             var currentRelativeFrame = currentGlobalFame;
         }
+        */
+
+        var currentRelativeFrame = Math.floor(canvasSprite.currentFrameKey);
 
         //console.log('\t currentRelativeFrame = ', currentRelativeFrame);
 
         var totalKeyFrames = canvasSprite.frameSequence.length;
-        var totalKeyFrameDuration = totalKeyFrames * thisGame.gameSettings.baseFramesPerSecond;
+        var totalKeyFrameDuration = totalKeyFrames * thisGame.gameSettings.baseFramesPerSecond; // * thisSpriteSpeed;
 
         var totalAnimationSteps = canvasSprite.animationSteps.length;
         var totalAnimationStepFrames = 0;
@@ -167,14 +176,17 @@
 
             stepRange.push(totalAnimationStepFrames + 1);
 
-            var requiredAnimationFrames = Math.ceil(stepData.frameDuration * (1 / canvasSprite.frameSpeed) * thisGameSpeed);
+            //var requiredAnimationFrames = Math.ceil(stepData.frameDuration * thisSpriteSpeed);
+            var requiredAnimationFrames = stepData.frameDuration;
             var newTotalAnimationFrames = totalAnimationStepFrames + requiredAnimationFrames;
+
             if (isLastKey
                 && canvasSprite.frameSequence == true
                 && newTotalAnimationFrames != totalKeyFrameDuration){
                 var frameDiff = newTotalAnimationFrames - totalKeyFrameDuration;
                 newTotalAnimationFrames -= frameDiff;
             }
+
             totalAnimationStepFrames = newTotalAnimationFrames;
 
             stepRange.push(totalAnimationStepFrames);
@@ -219,7 +231,8 @@
 
                 var xStart = stepData.startPosition[0];
                 var xEnd = stepData.endPosition[0];
-                if (typeof canvasSprite.frameDirection !== 'undefined' && canvasSprite.frameDirection == 'left'){
+                if (typeof canvasSprite.frameDirection !== 'undefined'
+                    && canvasSprite.frameDirection == 'left'){
                     xStart = xStart * -1;
                     xEnd = xEnd * -1;
                     }
