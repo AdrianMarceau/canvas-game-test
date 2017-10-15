@@ -1,7 +1,7 @@
 <?
 
 // Define a cache timestamp to force-refresh assets
-$cache_timestamp = '2017-10-11';
+$cache_timestamp = '2017-10-14A';
 
 ?>
 <!DOCTYPE html>
@@ -74,14 +74,14 @@ $cache_timestamp = '2017-10-11';
         battleConfig.fieldToken = 'default';
 
         // Define default player robots for the game
-        battleConfig.playerRobots = [
+        battleConfig.battleRobots.thisTeam = [
             ['default', 'C2'],
             ['default', 'B1'],
             ['default', 'B3']
             ];
 
         // Define default target robots for the game
-        battleConfig.targetRobots = [
+        battleConfig.battleRobots.targetTeam = [
             ['default', 'C2'],
             ['default', 'B1'],
             ['default', 'B3']

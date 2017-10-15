@@ -60,7 +60,9 @@
         'images/logo-large.png',
         'images/logo-small.png',
         'images/robot-status_left.png',
-        'images/robot-status_right.png'
+        'images/robot-status_right.png',
+        'images/operator-status_left.png',
+        'images/operator-status_right.png'
         ];
 
     // Sprite Variables
@@ -68,12 +70,10 @@
     var gameSpriteIndex = {};
     var gameSpriteRenderOrder = [];
 
-    // Field Variables
+    // Battle Variables
     var battleField = {};
+    var battleRobots = {};
 
-    // Robot Variables
-    var playerRobots = {};
-    var targetRobots = {};
 
     // -- PUBLIC METHODS -- //
 
@@ -96,8 +96,7 @@
         thisGame.gameSpriteRenderOrder = gameSpriteRenderOrder;
 
         thisGame.battleField = battleField;
-        thisGame.playerRobots = playerRobots;
-        thisGame.targetRobots = targetRobots;
+        thisGame.battleRobots = battleField;
 
         // Define game settings defaults
         var defaultSettings = gameSettings;
@@ -135,8 +134,8 @@
     }
 
     // Define our init object to setting things up
-    canvasGameEngine.prototype.startGame = function(){
-        debug('canvasGameEngine.startGame()');
+    canvasGameEngine.prototype.startGame = function(startCallback){
+        debug('canvasGameEngine.startGame()', startCallback);
 
         // Load required image files and then start the game
         resourceManager.loadFiles(thisGame.gameImages, function(){
@@ -147,7 +146,7 @@
 
             // Start the game
             //console.log('STARTING GAME!!!');
-            startGame();
+            startGame(startCallback);
 
             });
 
@@ -192,40 +191,83 @@
 
     }
 
-    // Define a function for loading a new player robot into the battle
-    canvasGameEngine.prototype.loadPlayerRobot = function(robotKey, robotToken, robotPosition){
-        //console.log('canvasGameEngine.newPlayerRobot()', robotKey, robotToken, robotPosition);
+    // Define a function for loading a new robot into the battle
+    canvasGameEngine.prototype.loadBattleRobot = function(robotTeam, robotKey, robotToken, robotPosition, robotSide){
+        //console.log('canvasGameEngine.loadBattleRobot()', robotTeam, robotKey, robotToken, robotPosition, robotSide);
+
+        // Return false if any key arguments are missing
+        if (typeof robotTeam === 'undefined' || robotTeam === false){ return false; }
+        if (typeof robotKey === 'undefined' || robotKey === false){ return false; }
+        if (typeof robotToken === 'undefined' || robotToken === false){ return false; }
+        if (typeof robotPosition === 'undefined' || robotPosition === false){ return false; }
+        if (typeof robotSide === 'undefined' || robotSide === false){ return false; }
 
         // Collect data for the requested field from the index
-        var playerRobot = robotIndex.getRobot(robotToken);
-        //console.log('\t playerRobot = ', playerRobot);
+        var battleRobot = robotIndex.getRobot(robotToken);
+        //console.log('\t battleRobot = ', battleRobot);
+        if (battleRobot === false){ return false; }
 
         // Set the robot key and position based on arguments
-        playerRobot.robotKey = robotKey;
-        playerRobot.robotPosition = robotPosition;
-        playerRobot.robotDirection = 'right';
+        battleRobot.robotKey = robotKey;
+        battleRobot.robotPosition = robotPosition;
+        battleRobot.robotSide = robotSide;
+        battleRobot.robotDirection = robotSide !== 'left' ? 'left' : 'right';
 
-        // If data was collected, load the player robot into the game
-        if (playerRobot !== false){ newPlayerRobot(playerRobot); }
+        // Insert this new robot data into the player team array
+        newBattleRobot(robotTeam, battleRobot);
 
     }
 
-    // Define a function for loading a new target robot into the battle
-    canvasGameEngine.prototype.loadTargetRobot = function(robotKey, robotToken, robotPosition){
-        //console.log('canvasGameEngine.newTargetRobot()', robotKey, robotToken, robotPosition);
+    // Define a function for listing all cell names on the battlefield
+    canvasGameEngine.prototype.getCellNames = function(){
+        //console.log('canvasGameEngine.getCellNames()');
+        return [
+            'A1', 'A2', 'A3',
+            'B1', 'B2', 'B3',
+            'C1', 'C2', 'C3'
+            ];
+    }
 
-        // Collect data for the requested field from the index
-        var targetRobot = robotIndex.getRobot(robotToken);
-        //console.log('\t targetRobot = ', targetRobot);
+    // Define a function for finding empty cells on one side of the battle field
+    canvasGameEngine.prototype.findEmptyCells = function(battleTeam){
+        //console.log('canvasGameEngine.findEmptyCells()');
 
-        // Set the robot key and position based on arguments
-        targetRobot.robotKey = robotKey;
-        targetRobot.robotPosition = robotPosition;
-        targetRobot.robotDirection = 'left';
+        if (typeof thisGame.battleRobots[battleTeam] === 'undefined'){ return false; }
 
-        // If data was collected, load the player robot into the game
-        if (targetRobot !== false){ newTargetRobot(targetRobot); }
+        // Collect all the cell names on this side of the field
+        var allCells = thisGame.getCellNames();
+        //console.log('\t allCells = ', allCells);
 
+        // Loop through requested team's robots and collect occupied cells
+        var occupiedCells = [];
+        for (var robotKey in thisGame.battleRobots[battleTeam]){
+            var battleRobot = thisGame.battleRobots[battleTeam][robotKey];
+            occupiedCells.push(battleRobot.robotPosition);
+        }
+        //console.log('\t occupiedCells = ', occupiedCells);
+
+        // Compare the two lists to find cells that are currently empty
+        var emptyCells = [];
+        for (var i = 0; i < allCells.length; i++){
+            var thisCell = allCells[i];
+            if (occupiedCells.indexOf(thisCell) === -1){
+                emptyCells.push(thisCell);
+                }
+            }
+        //console.log('\t emptyCells = ', emptyCells);
+
+        // Return the array of empty cells
+        return emptyCells;
+
+    }
+
+    // Define a function for finding the first empty cell on one side of the battle field
+    canvasGameEngine.prototype.findFirstEmptyCell = function(battleTeam){
+        //console.log('canvasGameEngine.findEmptyCells()');
+        if (typeof thisGame.battleRobots[battleTeam] === 'undefined'){ return false; }
+        var emptyCells = thisGame.findEmptyCells(battleTeam);
+        if (emptyCells !== false && emptyCells.length > 0){ return emptyCells[0]; }
+        else { return false; }
     }
 
 
@@ -250,12 +292,16 @@
     }
 
     // Define a function for intializing the actual game engine
-    function startGame(){
+    function startGame(startCallback){
         debug('canvasGameEngine.startGame()');
 
         initGameLoop();
         initGameCanvas();
         mainGameLoop();
+
+        if (typeof startCallback === 'function'){
+            startCallback();
+        }
 
     }
 
@@ -454,31 +500,12 @@
     // -- ROBOT FUNCTIONS -- //
 
     // Define a function for inserting a new robot into the player's team
-    function newPlayerRobot(playerRobot){
-        //console.log('canvasGameEngine.newPlayerRobot()', playerRobot);
-
-        // Insert this new robot data into the player team array
-        newBattleRobot('player', playerRobot);
-
-    }
-
-    // Define a function for inserting a new robot into the target's team
-    function newTargetRobot(targetRobot){
-        //console.log('canvasGameEngine.newTargetRobot()', targetRobot);
-
-        // Insert this new robot data into the target team array
-        newBattleRobot('target', targetRobot);
-
-    }
-
-    // Define a function for inserting a new robot into the player's team
     function newBattleRobot(battleTeam, battleRobot){
         //console.log('canvasGameEngine.newBattleRobot()', battleTeam, battleRobot);
 
-        // Create a pointer to the appropriate team
-        if (battleTeam == 'player'){ var battleTeamRobots = thisGame.playerRobots; }
-        else if (battleTeam == 'target'){ var battleTeamRobots = thisGame.targetRobots; }
-        else { return false; }
+        // Define a pointer to the appropriate team if exists, else create it
+        if (typeof thisGame.battleRobots[battleTeam] === 'undefined'){ thisGame.battleRobots[battleTeam] = []; }
+        var battleTeamRobots = thisGame.battleRobots[battleTeam];
 
         // Clone the provided robot data and assign to player
         var robotKey = battleRobot.robotKey;
@@ -569,22 +596,60 @@
         battleTeamRobots[robotKey].robotSprite.basePosition = [robotPositionX, robotPositionY, robotPositionZ];
 
         // Wait for the new background to load before updating the game sprite
-        var spriteKey = battleTeam + '/robots/' + robotKey;
+        var robotSpriteKey = battleTeam + '/robots/' + robotKey;
         resourceManager.loadFiles(robotImageURLs, function(){
-            //console.log('\t '+battleTeam+' robot sprites are loaded for spriteKey "'+spriteKey+'"!', robotImageURLs);
-            thisGame.gameSpriteIndex[spriteKey] = false;
-            newBattleRobotSprite(battleTeam, robotKey, spriteKey);
+            //console.log('\t '+battleTeam+' robot sprites are loaded for robotSpriteKey "'+robotSpriteKey+'"!', robotImageURLs);
+            thisGame.gameSpriteIndex[robotSpriteKey] = false;
+            newBattleRobotSprite(battleTeam, robotKey, robotSpriteKey);
+            newBattleRobotEnergySprite(battleTeam, robotKey, robotSpriteKey);
             });
 
+    }
 
+    // Define a function for generating and loading a robot sprite
+    function newBattleRobotSprite(battleTeam, robotKey, robotSpriteKey){
+        //console.log('canvasGameEngine.newBattleRobotSprite()', battleTeam, robotKey, robotSpriteKey);
+
+        // Define a pointer to the appropriate team if exists, else create it
+        if (typeof thisGame.battleRobots[battleTeam] === 'undefined'){ thisGame.battleRobots[battleTeam] = []; }
+        var battleTeamRobots = thisGame.battleRobots[battleTeam];
+
+        // Generate a new sprite for the field background
+        var playerRobotSprite = battleTeamRobots[robotKey].robotSprite;
+        playerRobotSprite.globalFrameStart = thisGame.gameState.currentFrame;
+        playerRobotSprite.currentFrameKey = 0;
+        playerRobotSprite.spriteObject = newCanvasSprite(
+            robotSpriteKey,
+            playerRobotSprite.filePath,
+            playerRobotSprite.frameSize,
+            playerRobotSprite.frameSize,
+            playerRobotSprite.frameLayout,
+            playerRobotSprite.frameSpeed,
+            playerRobotSprite.frameSequence
+            );
+
+        // Add generated field sprite to the parent index
+        thisGame.gameSpriteIndex[robotSpriteKey] = playerRobotSprite;
+
+        // Refresh the sprite rendering order
+        updateCanvasSpriteRenderOrder();
+
+    }
+
+    // Define a function for generating and loading a robot energy sprite
+    function newBattleRobotEnergySprite(battleTeam, robotKey, robotSpriteKey){
+        //console.log('canvasGameEngine.newBattleRobotEnergySprite()', battleTeam, robotKey, robotSpriteKey);
+
+        // Define a pointer to the appropriate team if exists, else create it
+        if (typeof thisGame.battleRobots[battleTeam] === 'undefined'){ thisGame.battleRobots[battleTeam] = []; }
+        var battleTeamRobots = thisGame.battleRobots[battleTeam];
 
         // Create the status bar icon for this robot
-        var statusSpriteKey = spriteKey + '/status';
+        var statusSpriteKey = robotSpriteKey + '/status';
         var robotStatusSprite = {
             filePath: 'images/robot-status_'+battleTeamRobots[robotKey].robotDirection+'.png',
             basePosition: [0, 0, 0],
             currentPosition: [0, 0, 0],
-            //currentOpacity: robotToken == 'mega-man' ? 1 : 0.5,
             frameWidth: 26,
             frameHeight: 71,
             frameSpeed: 1,
@@ -659,37 +724,6 @@
             robotStatusSprite.frameSequence
             );
         thisGame.gameSpriteIndex[statusSpriteKey] = robotStatusSprite;
-
-    }
-
-    // Define a function for generating and loading a robot sprite
-    function newBattleRobotSprite(battleTeam, robotKey, robotSpriteKey){
-        //console.log('canvasGameEngine.newBattleRobotSprite()', battleTeam, robotKey, spriteKey);
-
-        // Create a pointer to the appropriate team
-        if (battleTeam == 'player'){ var battleTeamRobots = thisGame.playerRobots; }
-        else if (battleTeam == 'target'){ var battleTeamRobots = thisGame.targetRobots; }
-        else { return false; }
-
-        // Generate a new sprite for the field background
-        var playerRobotSprite = battleTeamRobots[robotKey].robotSprite;
-        playerRobotSprite.globalFrameStart = thisGame.gameState.currentFrame;
-        playerRobotSprite.currentFrameKey = 0;
-        playerRobotSprite.spriteObject = newCanvasSprite(
-            robotSpriteKey,
-            playerRobotSprite.filePath,
-            playerRobotSprite.frameSize,
-            playerRobotSprite.frameSize,
-            playerRobotSprite.frameLayout,
-            playerRobotSprite.frameSpeed,
-            playerRobotSprite.frameSequence
-            );
-
-        // Add generated field sprite to the parent index
-        thisGame.gameSpriteIndex[robotSpriteKey] = playerRobotSprite;
-
-        // Refresh the sprite rendering order
-        updateCanvasSpriteRenderOrder();
 
     }
 
