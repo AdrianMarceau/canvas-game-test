@@ -1,7 +1,7 @@
 <?
 
 // Define a cache timestamp to force-refresh assets
-$cache_timestamp = '2017-10-14A';
+$cache_timestamp = '2017-10-14B';
 
 ?>
 <!DOCTYPE html>
