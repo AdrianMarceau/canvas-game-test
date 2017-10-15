@@ -63,9 +63,8 @@ $cache_timestamp = '2017-10-11';
     <script type="text/javascript" src="scripts/canvasGame.fieldIndex.js?<?= $cache_timestamp ?>"></script>
     <script type="text/javascript" src="scripts/canvasGame.robotIndex.js?<?= $cache_timestamp ?>"></script>
 
-    <script type="text/javascript" src="objects/fields/default.js?<?= $cache_timestamp ?>"></script>
-
-    <script type="text/javascript" src="objects/robots/default.js?<?= $cache_timestamp ?>"></script>
+    <script type="text/javascript" src="objects/fields/index.js.php?<?= $cache_timestamp ?>"></script>
+    <script type="text/javascript" src="objects/robots/index.js.php?<?= $cache_timestamp ?>"></script>
 
     <script type="text/javascript" src="scripts/script.js?<?= $cache_timestamp ?>"></script>
 
