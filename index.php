@@ -19,7 +19,7 @@ $cache_timestamp = '2017-10-14A';
             <h1>Canvas Game Test</h1>
         </div>
 
-        <div class="game">
+        <div class="game no-console">
 
             <div class="canvas">
                 <canvas width="962" height="248"></canvas>
@@ -33,15 +33,50 @@ $cache_timestamp = '2017-10-14A';
 
             <div class="buttons">
                 <div class="wrap">
-                    <div style="clear: both;">
+                    <div style="clear: both; padding-bottom: 4px;">
                         <a class="button pause" data-state="on">Pause Game</a>
                         <a class="button debug" data-state="off">Show Debug</a>
                     </div>
-                    <div style="float: none; clear: both; font-size: 80%; padding: 6px 9px 3px;">
-                        <div>
+                    <?
+
+                    // Define the fields we should display as options
+                    $debug_fields = array();
+                    $debug_fields['default'] = 'None';
+
+                    ?>
+                    <div style="text-align: left; overflow: hidden;">
+                        <div style="background-color: rgba(0, 0, 0, 0.2); padding: 3px 9px;">
+                            <strong style="display: inline-block; min-width: 125px;">Change Field:</strong>
+                            <? foreach ($debug_fields as $field_token => $field_name) { ?>
+                                <a class="button" onclick="javascript:canvasGame.changeField('<?= $field_token ?>');"><?= $field_name ?></a>
+                            <? } ?>
+                        </div>
+                        <div style="background-color: rgba(0, 0, 0, 0.1); padding: 3px 9px;">
+                            <strong style="display: inline-block; min-width: 125px;">Change Background:</strong>
+                            <? foreach ($debug_fields as $field_token => $field_name) { ?>
+                                <a class="button" onclick="javascript:canvasGame.changeFieldBackground('<?= $field_token ?>');"><?= $field_name ?></a>
+                            <? } ?>
+                        </div>
+                        <div style="background-color: rgba(0, 0, 0, 0.2); padding: 3px 9px;">
+                            <strong style="display: inline-block; min-width: 125px;">Change Foreground:</strong>
+                            <? foreach ($debug_fields as $field_token => $field_name) { ?>
+                                <a class="button" onclick="javascript:canvasGame.changeFieldForeground('<?= $field_token ?>');"><?= $field_name ?></a>
+                            <? } ?>
+                        </div>
+                        <div style="background-color: rgba(0, 0, 0, 0.1); padding: 3px 9px;">
+                            <strong style="display: inline-block; min-width: 125px;">Change Speed:</strong>
                             <a class="button" onclick="javascript:canvasGame.makeGameSlower();">Slower</a>
                             <a class="button" onclick="javascript:canvasGame.resetGameSpeed();">Reset</a>
                             <a class="button" onclick="javascript:canvasGame.makeGameFaster();">Faster</a>
+                        </div>
+                        <div style="background-color: rgba(0, 0, 0, 0.2); padding: 3px 9px;">
+                            <strong style="display: inline-block; min-width: 125px;">Add New Robot:</strong>
+                            <a class="button" onclick="javascript:
+                                canvasGame.loadBattleRobot('thisTeam', canvasGame.battleRobots.thisTeam.length, 'default', canvasGame.findFirstEmptyCell('thisTeam'), 'left');
+                                ">This Team</a>
+                            <a class="button" onclick="javascript:
+                                canvasGame.loadBattleRobot('targetTeam', canvasGame.battleRobots.targetTeam.length, 'default', canvasGame.findFirstEmptyCell('targetTeam'), 'right');
+                                ">Target Team</a>
                         </div>
                     </div>
                 </div>
