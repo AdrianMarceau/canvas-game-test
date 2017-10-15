@@ -1123,20 +1123,20 @@
         // Define the base positions for all cells on the battlefield
         var positionMap = {};
 
-        var baseA = 320;
-        positionMap['A1'] = [(baseA + 0), pos1Y];
-        positionMap['A2'] = [(baseA + 30), pos2Y];
-        positionMap['A3'] = [(baseA + 60), pos3Y];
+        var baseC = 65;
+        positionMap['A1'] = [(baseC + 0), pos1Y];
+        positionMap['A2'] = [(baseC + 5), pos2Y];
+        positionMap['A3'] = [(baseC + 10), pos3Y];
 
         var baseB = 195;
         positionMap['B1'] = [(baseB + 0), pos1Y];
         positionMap['B2'] = [(baseB + 15), pos2Y];
         positionMap['B3'] = [(baseB + 30), pos3Y];
 
-        var baseC = 65;
-        positionMap['C1'] = [(baseC + 0), pos1Y];
-        positionMap['C2'] = [(baseC + 5), pos2Y];
-        positionMap['C3'] = [(baseC + 10), pos3Y];
+        var baseA = 320;
+        positionMap['C1'] = [(baseA + 0), pos1Y];
+        positionMap['C2'] = [(baseA + 30), pos2Y];
+        positionMap['C3'] = [(baseA + 60), pos3Y];
 
         /*
 
