@@ -43,8 +43,6 @@ $(document).ready(function(){
 
         //console.log('thisGame.gameSpriteIndex = ', thisGame.gameSpriteIndex);
 
-        //console.log('thisGame.gameSpriteIndexKeys = ', thisGame.gameSpriteIndexKeys);
-
         // Start the canvas game loop when ready
         thisGame.startGame();
 
