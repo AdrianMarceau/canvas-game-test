@@ -585,8 +585,8 @@
             basePosition: [0, 0, 0],
             currentPosition: [0, 0, 0],
             //currentOpacity: robotToken == 'mega-man' ? 1 : 0.5,
-            frameWidth: 36,
-            frameHeight: 78,
+            frameWidth: 26,
+            frameHeight: 71,
             frameSpeed: 1,
             frameLayout: 'vertical',
             frameSequence: [0],
@@ -610,7 +610,12 @@
         var statusPositionOffset = function(){
             var battleRobot = battleTeamRobots[robotKey];
             var positionMod = statusPositionMod();
-            var positionOffset = positionMod * Math.ceil(battleRobot.robotSprite.frameSize * 0.3);
+            var overflowValue = battleRobot.robotSprite.frameSize - 80;
+            var positionOffset = positionMod * Math.ceil(battleRobot.robotSprite.frameSize * 0.5);
+            if (overflowValue > 0){
+                positionOffset -= Math.ceil(overflowValue / 4) * positionMod;
+                //positionOffset -= positionMod * Math.ceil(robotStatusSprite.frameWidth / 2);
+            }
             return positionOffset;
         };
         var statusPositionX = function(){
@@ -618,9 +623,7 @@
             var positionMod = statusPositionMod();
             var positionX = battleRobot.robotSprite.currentPosition[0] + statusPositionOffset();
             var overflowValue = battleRobot.robotSprite.frameSize - 80;
-            if (battleRobot.robotDirection == 'left'){
-                positionX += robotStatusSprite.frameWidth;
-            }
+            positionX += robotStatusSprite.frameWidth;
             if (overflowValue > 0){
                 positionX += Math.ceil(overflowValue / 2);
                 positionX -= positionMod * Math.ceil(robotStatusSprite.frameWidth / 2);
@@ -645,6 +648,7 @@
         };
         robotStatusSprite.basePosition = [statusPositionX, statusPositionY, statusPositionZ];
         robotStatusSprite.globalFrameStart = thisGame.gameState.currentFrame;
+        robotStatusSprite.currentFrameKey = 0;
         robotStatusSprite.spriteObject = newCanvasSprite(
             statusSpriteKey,
             robotStatusSprite.filePath,
@@ -670,6 +674,7 @@
         // Generate a new sprite for the field background
         var playerRobotSprite = battleTeamRobots[robotKey].robotSprite;
         playerRobotSprite.globalFrameStart = thisGame.gameState.currentFrame;
+        playerRobotSprite.currentFrameKey = 0;
         playerRobotSprite.spriteObject = newCanvasSprite(
             robotSpriteKey,
             playerRobotSprite.filePath,
@@ -742,6 +747,7 @@
         // Generate a new sprite for the field background
         var spriteIndexKey = 'fieldBackground';
         fieldBackground.globalFrameStart = thisGame.gameState.currentFrame;
+        fieldBackground.currentFrameKey = 0;
         fieldBackground.spriteObject = newCanvasSprite(
             spriteIndexKey,
             fieldBackground.filePath,
@@ -770,6 +776,7 @@
         // Generate a new sprite for the field foreground
         var spriteIndexKey = 'fieldForeground';
         fieldForeground.globalFrameStart = thisGame.gameState.currentFrame;
+        fieldForeground.currentFrameKey = 0;
         fieldForeground.spriteObject = newCanvasSprite(
             spriteIndexKey,
             fieldForeground.filePath,
@@ -1100,24 +1107,36 @@
         if (typeof robotDirection === 'undefined'){ robotDirection = 'right'; }
 
         // Define the common Y positions for each row
-        var pos1Y = 134;
-        var pos2Y = 167;
-        var pos3Y = 200;
+
+        var pos1Y = 144;  // y + 0
+        var pos2Y = 171;  // y + 27
+        var pos3Y = 202;  // y + 31
+
+        /*
+
+        var pos1Y = 134;  // y + 0
+        var pos2Y = 167;  // y + 33
+        var pos3Y = 200;  // y + 33
+
+        */
 
         // Define the base positions for all cells on the battlefield
         var positionMap = {};
 
-        positionMap['A1'] = [320, pos1Y]; // x + 0
-        positionMap['A2'] = [350, pos2Y]; // x + 30
-        positionMap['A3'] = [380, pos3Y]; // x + 30
+        var baseA = 320;
+        positionMap['A1'] = [(baseA + 0), pos1Y];
+        positionMap['A2'] = [(baseA + 30), pos2Y];
+        positionMap['A3'] = [(baseA + 60), pos3Y];
 
-        positionMap['B1'] = [195, pos1Y]; // x + 0
-        positionMap['B2'] = [210, pos2Y]; // x + 15
-        positionMap['B3'] = [225, pos3Y]; // x + 15
+        var baseB = 195;
+        positionMap['B1'] = [(baseB + 0), pos1Y];
+        positionMap['B2'] = [(baseB + 15), pos2Y];
+        positionMap['B3'] = [(baseB + 30), pos3Y];
 
-        positionMap['C1'] = [65, pos1Y];  // x + 0
-        positionMap['C2'] = [70, pos2Y];  // x + 5
-        positionMap['C3'] = [75, pos3Y];  // x + 5
+        var baseC = 65;
+        positionMap['C1'] = [(baseC + 0), pos1Y];
+        positionMap['C2'] = [(baseC + 5), pos2Y];
+        positionMap['C3'] = [(baseC + 10), pos3Y];
 
         /*
 
