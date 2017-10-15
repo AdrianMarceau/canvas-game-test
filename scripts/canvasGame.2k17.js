@@ -338,6 +338,9 @@
         //debug('\t thisGame.gameSettings.pauseGameLoop = ' + thisGame.gameSettings.pauseGameLoop);
         if (thisGame.gameSettings.pauseGameLoop == true){ return false; }
 
+        //debug('\t thisGame.gameSettings.autoGameLoop = ' + thisGame.gameSettings.autoGameLoop);
+        if (thisGame.gameSettings.autoGameLoop == false){ return false; }
+
         var nowTime = performance.now() || Date.now();
         //var diffTime = (nowTime - thisGame.gameState.lastLoopTime) / 1000.0;
         var diffTime = nowTime - thisGame.gameState.lastLoopTime;
@@ -365,9 +368,6 @@
 
             thisGame.gameState.lastLoopDiff = diffTime;
             thisGame.gameState.lastLoopTime = nowTime;
-
-            //debug('\t thisGame.gameSettings.autoGameLoop = ' + thisGame.gameSettings.autoGameLoop);
-            if (thisGame.gameSettings.autoGameLoop == false){ return false; }
 
             requestAnimFrame(mainGameLoop);
 
