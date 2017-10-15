@@ -22,6 +22,15 @@
         buttonsDiv: null
         };
 
+    // Script Variables
+    var gameScripts = [
+        'scripts/modules/fieldIndex.js',
+        'scripts/modules/robotIndex.js',
+        'scripts/modules/gameSprite.js',
+        'objects/fields/index.js.php',
+        'objects/robots/index.js.php'
+        ];
+
     // Settings Variables
     var gameSettings = {
         baseHref: 'http://canvas.game.test/',
@@ -66,7 +75,6 @@
         ];
 
     // Sprite Variables
-    var gameSpriteIndexKeys = [];
     var gameSpriteIndex = {};
     var gameSpriteRenderOrder = [];
 
@@ -80,18 +88,20 @@
     // Define our canvas game constructor
     var thisGame;
     this.canvasGameEngine = function(){
-        debug('new canvasGameEngine()');
+        //console.log('new canvasGameEngine()');
 
         // Set variable pointers
         thisGame = this;
+
         thisGame.gameWindow = gameWindow;
+
+        thisGame.gameScripts = gameScripts;
 
         thisGame.gameSettings = gameSettings;
         thisGame.gameState = gameState;
 
         thisGame.gameImages = gameImages;
 
-        thisGame.gameSpriteIndexKeys = gameSpriteIndexKeys;
         thisGame.gameSpriteIndex = gameSpriteIndex;
         thisGame.gameSpriteRenderOrder = gameSpriteRenderOrder;
 
@@ -108,8 +118,9 @@
             thisGame.gameSettings = defaultSettings;
             }
 
-        // Initialize the game engine
-        loadEngine();
+        // Initialize the game engine with callback if provided
+        var readyCallback = typeof arguments[1] === 'function' ? arguments[1] : function(){};
+        loadEngine(readyCallback);
 
     }
 
@@ -274,8 +285,8 @@
     // -- INIT FUNCTIONS -- //
 
     // Define a function for loading our game
-    function loadEngine(){
-        debug('canvasGameEngine.loadEngine()');
+    function loadEngine(readyCallback){
+        //console.log('canvasGameEngine.loadEngine()');
 
         // Define object references to HTML elements
         thisGame.gameWindow.rootDiv = $(thisGame.gameSettings.htmlClass);
@@ -287,6 +298,16 @@
         resourceManager.setup({
             parentElement: thisGame.gameWindow.rootDiv,
             baseHref: thisGame.gameSettings.baseHref
+            });
+
+        // Load all required game scripts before proceeding
+        //console.log('\t loading thisGame.gameScripts = ', thisGame.gameScripts);
+        resourceManager.loadFiles(thisGame.gameScripts, function(){
+            //console.log('\t thisGame.gameScripts has finished loading! ', thisGame.gameScripts);
+
+            // If the readyCallback was set, execute it
+            readyCallback(thisGame);
+
             });
 
     }

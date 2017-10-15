@@ -6,7 +6,7 @@
  * ------------------------
  */
 
-(function(){
+(function($){
 
     var parentElement = null;
 
@@ -59,6 +59,10 @@
 
     // -- LOAD FILES -- //
 
+    // Define functions for checking if a file URL is of a certain type
+    function isImageURL(fileURL){ return fileURL.match(/\.(jpg|jpeg|bmp|png|gif)$/i); }
+    function isScriptURL(fileURL){ return fileURL.match(/\.(js|js\.php)$/i); }
+
     // Define a function for loading a single file with a callback
     function loadFile(fileURL, onReadyCallback){
         //console.log('resourceManager.loadFile(fileURL, onReadyCallback)', fileURL);
@@ -71,7 +75,9 @@
         //console.log('\t loadedFileURLs = ', loadedFileURLs);
 
         nowLoading();
-        loadImageFile(fileURL, onReadyCallback);
+        if (isImageURL(fileURL)){ loadImageFile(fileURL, onReadyCallback); }
+        else if (isScriptURL(fileURL)){ loadScriptFile(fileURL, onReadyCallback); }
+        else { return false; }
 
     }
 
@@ -87,7 +93,9 @@
         //console.log('\t loadedFileURLs = ', loadedFileURLs);
 
         nowLoading();
-        loadImageFiles(fileURLs, onReadyCallback);
+        if (isImageURL(fileURLs[0])){ loadImageFiles(fileURLs, onReadyCallback); }
+        else if (isScriptURL(fileURLs[0])){ loadScriptFiles(fileURLs, onReadyCallback); }
+        else { return false; }
 
     }
 
@@ -117,7 +125,7 @@
 
     }
 
-    // Define a function for loading an array of files with a single callback
+    // Define a function for loading an array of image files with a single callback
     function loadImageFiles(fileURLs, onReadyCallback){
         //console.log('resourceManager.loadImageFiles(fileURLs, onReadyCallback)', fileURLs);
 
@@ -153,6 +161,84 @@
             var imageFile = imageFiles[i];
 
             imageFile.src = fileURL;
+
+            }
+
+    }
+
+
+    // -- LOAD SCRIPTS  -- //
+
+    // Define a function for loading a single script with a callback
+    function loadScriptFile(fileURL, onReadyCallback){
+        //console.log('resourceManager.loadScriptFile(fileURL, onReadyCallback)', fileURL);
+
+        if (typeof fileURL !== 'string'){ return false; }
+        if (typeof onReadyCallback === 'undefined'){ onReadyCallback = globalReadyCallback; }
+
+        var scriptHead = document.getElementsByTagName('head')[0];
+
+        var scriptFile = document.createElement('script');
+        scriptFile.type = 'text/javascript';
+        scriptFile.async = true;
+        scriptFile.addEventListener('load', function(e){
+            //self.loaded(e);
+            var fileURL = this.src.replace(baseHref, '');
+            loadedFileURLs.push(fileURL);
+            //console.log('\t loadedFileURLs.push('+fileURL+');');
+            resourceIndex[fileURL] = this;
+            if (isReady(fileURL)){
+                onReadyCallback();
+                doneLoading();
+                }
+            }, false);
+
+        scriptFile.src = fileURL;
+        scriptHead.appendChild(scriptFile);
+
+    }
+
+    // Define a function for loading an array of script files with a single callback
+    function loadScriptFiles(fileURLs, onReadyCallback){
+        //console.log('resourceManager.loadScriptFiles(fileURLs, onReadyCallback)', fileURLs);
+
+        if (!(fileURLs instanceof Array)){ return false; }
+        if (typeof onReadyCallback === 'undefined'){ onReadyCallback = globalReadyCallback; }
+
+        var scriptHead = document.getElementsByTagName('head')[0];
+        var scriptFiles = [];
+
+        for (i in fileURLs){
+
+            var fileURL = fileURLs[i];
+
+            var scriptFile = document.createElement('script');
+            scriptFile.type = 'text/javascript';
+            scriptFile.async = true;
+            scriptFile.addEventListener('load', function(e){
+                //self.loaded(e);
+                var fileURL = this.src.replace(baseHref, '');
+                loadedFileURLs.push(fileURL);
+                //console.log('\t loadedFileURLs.push('+fileURL+');');
+                resourceIndex[fileURL] = this;
+                if (isReady(fileURLs)){
+                    onReadyCallback();
+                    doneLoading();
+                    }
+                }, false);
+
+            //resourceIndex[fileURL] = false;
+            scriptFiles.push(scriptFile);
+
+            }
+
+        for (i in fileURLs){
+
+            var fileURL = fileURLs[i];
+            var scriptFile = scriptFiles[i];
+
+            scriptFile.src = fileURL;
+            scriptHead.appendChild(scriptFile);
 
             }
 
@@ -216,4 +302,4 @@
         onReady: onReady
         };
 
-})();
+})(jQuery);

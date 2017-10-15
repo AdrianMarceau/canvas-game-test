@@ -86,23 +86,11 @@ $cache_timestamp = '2017-10-14B';
 
     </div>
 
-    <script type="text/javascript" src="scripts/jquery-3.2.1.min.js?<?= $cache_timestamp ?>"></script>
-    <script type="text/javascript" src="scripts/polyfills.js?<?= $cache_timestamp ?>"></script>
-
+    <script type="text/javascript" src="scripts/libs/jquery-3.2.1.min.js?<?= $cache_timestamp ?>"></script>
+    <script type="text/javascript" src="scripts/libs/legacyPolyfills.js?<?= $cache_timestamp ?>"></script>
+    <script type="text/javascript" src="scripts/libs/resourceManager.js?<?= $cache_timestamp ?>"></script>
     <script type="text/javascript" src="scripts/canvasGame.2k17.js?<?= $cache_timestamp ?>"></script>
-
-    <script type="text/javascript" src="scripts/canvasGame.gameSprite.js?<?= $cache_timestamp ?>"></script>
-
-    <script type="text/javascript" src="scripts/canvasGame.resourceManager.js?<?= $cache_timestamp ?>"></script>
-
-    <script type="text/javascript" src="scripts/canvasGame.fieldIndex.js?<?= $cache_timestamp ?>"></script>
-    <script type="text/javascript" src="scripts/canvasGame.robotIndex.js?<?= $cache_timestamp ?>"></script>
-
-    <script type="text/javascript" src="objects/fields/index.js.php?<?= $cache_timestamp ?>"></script>
-    <script type="text/javascript" src="objects/robots/index.js.php?<?= $cache_timestamp ?>"></script>
-
     <script type="text/javascript" src="scripts/script.js?<?= $cache_timestamp ?>"></script>
-
     <script type="text/javascript">
 
         // Update variables for this test instance
