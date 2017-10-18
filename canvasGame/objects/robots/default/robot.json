@@ -1,0 +1,12 @@
+{
+    "robotToken": "default",
+    "robotName": "Default Robot",
+    "robotMug": {
+        "fileName": "mug_{dir}_{size}.png"
+        },
+    "robotSprite": {
+        "fileName": "{kind}_{dir}_{size}.png",
+        "frameSpeed": 1,
+        "frameSequence": [0, 1, 2, 1]
+        }
+    }

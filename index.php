@@ -1,7 +1,10 @@
 <?
 
+// Include the game config
+require('canvasGame/config.php');
+
 // Define a cache timestamp to force-refresh assets
-$cache_timestamp = '2017-10-14B';
+$cache_timestamp = '2017-10-15-A';
 
 ?>
 <!DOCTYPE html>
@@ -86,24 +89,32 @@ $cache_timestamp = '2017-10-14B';
 
     </div>
 
-    <script type="text/javascript" src="scripts/libs/jquery-3.2.1.min.js?<?= $cache_timestamp ?>"></script>
-    <script type="text/javascript" src="scripts/libs/legacyPolyfills.js?<?= $cache_timestamp ?>"></script>
-    <script type="text/javascript" src="scripts/libs/resourceManager.js?<?= $cache_timestamp ?>"></script>
-    <script type="text/javascript" src="scripts/canvasGame.2k17.js?<?= $cache_timestamp ?>"></script>
+    <script type="text/javascript" src="scripts/jquery-3.2.1.min.js?<?= $cache_timestamp ?>"></script>
+    <script type="text/javascript" src="scripts/legacyPolyfills.js?<?= $cache_timestamp ?>"></script>
+
+    <script type="text/javascript" src="canvasGame/indexes/resourceIndex.js?<?= $cache_timestamp ?>"></script>
+    <script type="text/javascript" src="canvasGame/canvasGame.2k17.js?<?= $cache_timestamp ?>"></script>
+
     <script type="text/javascript" src="scripts/script.js?<?= $cache_timestamp ?>"></script>
+
     <script type="text/javascript">
 
-        // Update variables for this test instance
+        // Update environments for the game
+        battleConfig.baseHref = '<?= CANVASGAME_BASE_HREF ?>';
+        battleConfig.baseCorePath = '<?= CANVASGAME_CORE_PATH ?>';
+        battleConfig.baseCustomPath = '<?= CANVASGAME_CUSTOM_PATH ?>';
+
+        // Define a starter fields for this game
         battleConfig.baseFieldToken = 'default';
 
-        // Define default player robots for the game
+        // Define default hero robots for the game
         battleConfig.baseBattleRobots.thisTeam = [
             ['default', 'C2'],
             ['default', 'B1'],
             ['default', 'B3']
             ];
 
-        // Define default target robots for the game
+        // Define default enemy robots for the game
         battleConfig.baseBattleRobots.targetTeam = [
             ['default', 'C2'],
             ['default', 'B1'],

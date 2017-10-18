@@ -11,13 +11,7 @@ var canvasGame;
 var battleConfig;
 $(document).ready(function(){
 
-    // Collect current URL as the base href
-    var baseHref = window.location.href;
-    baseHref = baseHref.replace(/[^\/]+$/, '');
-
-    // Update the battle config with custom values
-    battleConfig.baseHref = baseHref;
-    battleConfig.showDebug = false;
+    //console.log('creating new game...');
 
     // Create new game object with custom settings
     canvasGame = new canvasGameEngine(battleConfig, function(thisGame){
