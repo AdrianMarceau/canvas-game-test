@@ -3,9 +3,6 @@
 // Include the game config
 require('canvasGame/config.php');
 
-// Define a cache timestamp to force-refresh assets
-$cache_timestamp = '2017-10-15-A';
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -13,7 +10,7 @@ $cache_timestamp = '2017-10-15-A';
     <meta charset="utf8" />
     <title>Canvas Game Test</title>
     <meta name="robots" content="noindex,nofollow" />
-    <link type="text/css" rel="stylesheet" href="styles/style.css?<?= $cache_timestamp ?>" />
+    <link type="text/css" rel="stylesheet" href="styles/style.css?<?= CANVASGAME_CACHE_DATE ?>" />
 </head>
 <body>
     <div class="wrapper">
@@ -89,13 +86,13 @@ $cache_timestamp = '2017-10-15-A';
 
     </div>
 
-    <script type="text/javascript" src="scripts/jquery-3.2.1.min.js?<?= $cache_timestamp ?>"></script>
-    <script type="text/javascript" src="scripts/legacyPolyfills.js?<?= $cache_timestamp ?>"></script>
+    <script type="text/javascript" src="scripts/jquery-3.2.1.min.js?<?= CANVASGAME_CACHE_DATE ?>"></script>
+    <script type="text/javascript" src="scripts/legacyPolyfills.js?<?= CANVASGAME_CACHE_DATE ?>"></script>
 
-    <script type="text/javascript" src="canvasGame/indexes/resourceIndex.js?<?= $cache_timestamp ?>"></script>
-    <script type="text/javascript" src="canvasGame/canvasGame.2k17.js?<?= $cache_timestamp ?>"></script>
+    <script type="text/javascript" src="canvasGame/indexes/resourceIndex.js?<?= CANVASGAME_CACHE_DATE ?>"></script>
+    <script type="text/javascript" src="canvasGame/canvasGame.2k17.js?<?= CANVASGAME_CACHE_DATE ?>"></script>
 
-    <script type="text/javascript" src="scripts/script.js?<?= $cache_timestamp ?>"></script>
+    <script type="text/javascript" src="scripts/script.js?<?= CANVASGAME_CACHE_DATE ?>"></script>
 
     <script type="text/javascript">
 
