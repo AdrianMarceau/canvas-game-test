@@ -1,3 +1,12 @@
+/*
+ * ------------------------
+ * CANVAS GAME TEST 2017
+ * ------------------------
+ * Game Speed Module
+ * ------------------------
+ */
+
+// Extend the active game object with custom speed functionality
 (function(thisGame){
 
     // Define a method for decreasing the global game speed
