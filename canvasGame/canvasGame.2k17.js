@@ -26,7 +26,8 @@
         'indexes/battleFieldIndex.js',
         'indexes/battleRobotIndex.js',
         'classes/canvasGameSprite.js',
-        'modules/canvasGameSpeed.js'
+        'modules/canvasGameSpeed.js',
+        'modules/canvasBattleField.js'
         ];
 
     // Script Index Variables
@@ -85,7 +86,6 @@
     var gameSpriteRenderOrder = [];
 
     // Battle Variables
-    var battleField = {};
     var battleRobots = {};
 
 
@@ -113,41 +113,18 @@
         thisGame.gameSpriteIndex = gameSpriteIndex;
         thisGame.gameSpriteRenderOrder = gameSpriteRenderOrder;
 
-        thisGame.battleField = battleField;
-        thisGame.battleRobots = battleField;
+        thisGame.battleRobots = battleRobots;
 
         // Define game settings defaults
         var defaultSettings = gameSettings;
 
         // Create settings by extending defaults with the passed in arugments
         var customSettings = arguments[0] && typeof arguments[0] === "object" ? arguments[0] : {};
-        thisGame.gameSettings = extendSettings(defaultSettings, customSettings);
+        thisGame.gameSettings = extendGameSettings(defaultSettings, customSettings);
 
         // Initialize the game engine with callback if provided
         var readyCallback = typeof arguments[1] === 'function' ? arguments[1] : function(){};
         loadEngine(readyCallback);
-
-    }
-
-    // Define a method for setting the battle field
-    canvasGameEngine.prototype.setBattleField = function(fieldToken){
-        //console.log('canvasGameEngine.setField(fieldToken)', fieldToken);
-
-        // Collect battle field data based on token
-        var battleField = battleFieldIndex.getField(fieldToken);
-        //console.log('canvasGameEngine.setField // battleField = ', battleField);
-
-        // Update base field data with provided args
-        thisGame.battleField.objectPath = battleField.objectPath;
-        thisGame.battleField.fieldName = battleField.fieldName;
-        thisGame.battleField.fieldBackground = cloneObject(battleField.fieldBackground);
-        thisGame.battleField.fieldForeground = cloneObject(battleField.fieldForeground);
-        //console.log('canvasGameEngine.setField // thisGame.battleField = ', thisGame.battleField);
-
-        // Push field images into the resource queue
-        thisGame.gameImages.push(thisGame.battleField.objectPath + 'background.png');
-        thisGame.gameImages.push(thisGame.battleField.objectPath + 'foreground.png');
-        //console.log('canvasGameEngine.setField // thisGame.gameImages = ', thisGame.gameImages);
 
     }
 
@@ -161,9 +138,9 @@
             || typeof thisGame.battleField.fieldForeground === 'undefined'){
             if (typeof thisGame.gameSettings.baseFieldToken !== 'undefined'){
                 var baseBattleField = thisGame.gameSettings.baseFieldToken;
-                thisGame.setBattleField(baseBattleField);
+                thisGame.setField(baseBattleField);
                 } else {
-                thisGame.setBattleField('default');
+                thisGame.setField('default');
                 }
             }
 
@@ -195,45 +172,6 @@
             startGame(startCallback);
 
             });
-
-    }
-
-    // Define a function for changing the entire battle field by token
-    canvasGameEngine.prototype.changeField = function(fieldToken){
-        //console.log('canvasGameEngine.changeField()', fieldToken);
-
-        // Collect data for the requested field from the index
-        var battleField = battleFieldIndex.getField(fieldToken);
-        //console.log('\t battleField = ', battleField);
-
-        // If data was collected, use it to update the current field
-        if (battleField !== false){ changeBattleField(battleField); }
-
-    }
-
-    // Define a function for changing the battle field background by token
-    canvasGameEngine.prototype.changeFieldBackground = function(fieldToken){
-        //console.log('canvasGameEngine.changeFieldBackground()', fieldToken);
-
-        // Collect data for the requested field from the index
-        var battleField = battleFieldIndex.getField(fieldToken);
-        //console.log('\t battleField = ', battleField);
-
-        // If data was collected, use it to update the current field
-        if (battleField !== false){ changeBattleFieldBackground(battleField.fieldBackground); }
-
-    }
-
-    // Define a function for changing the battle field foreground by token
-    canvasGameEngine.prototype.changeFieldForeground = function(fieldToken){
-        //console.log('canvasGameEngine.changeFieldForeground(fieldToken)', fieldToken);
-
-        // Collect data for the requested field from the index
-        var battleField = battleFieldIndex.getField(fieldToken);
-        //console.log('\t battleField = ', battleField);
-
-        // If data was collected, use it to update the current field
-        if (battleField !== false){ changeBattleFieldForeground(battleField.fieldForeground); }
 
     }
 
@@ -569,11 +507,9 @@
     function loadCanvasSprites(){
         debug('canvasGameEngine.loadCanvasSprites()');
 
-        // Load the field background sprite
-        loadFieldBackgroundSprite(thisGame.battleField.fieldBackground);
+        // Load the field sprites into the canvas
+        thisGame.loadFieldSprites();
 
-        // Load the field foreground sprite
-        loadFieldForegroundSprite(thisGame.battleField.fieldForeground);
 
         // TEST OPERATOR SPRITES //
 
@@ -599,7 +535,7 @@
                 };
             operatorEnergySprite.globalFrameStart = thisGame.gameState.currentFrame;
             operatorEnergySprite.currentFrameKey = 0;
-            operatorEnergySprite.spriteObject = newCanvasSprite(
+            operatorEnergySprite.spriteObject = thisGame.newCanvasSprite(
                 energySpriteKey,
                 operatorEnergySprite.filePath,
                 operatorEnergySprite.frameWidth,
@@ -636,7 +572,7 @@
                 };
             operatorEnergySprite.globalFrameStart = thisGame.gameState.currentFrame;
             operatorEnergySprite.currentFrameKey = 0;
-            operatorEnergySprite.spriteObject = newCanvasSprite(
+            operatorEnergySprite.spriteObject = thisGame.newCanvasSprite(
                 energySpriteKey,
                 operatorEnergySprite.filePath,
                 operatorEnergySprite.frameWidth,
@@ -668,7 +604,7 @@
         var robotKey = battleRobot.robotKey;
         var robotToken = battleRobot.robotToken;
         var robotDirection = battleRobot.robotDirection;
-        battleTeamRobots[robotKey] = cloneObject(battleRobot);
+        battleTeamRobots[robotKey] = cloneGameObject(battleRobot);
 
         // Update the robot sprites' frame directions
         battleTeamRobots[robotKey].robotMug.frameDirection = robotDirection;
@@ -775,7 +711,7 @@
         var playerRobotSprite = battleTeamRobots[robotKey].robotSprite;
         playerRobotSprite.globalFrameStart = thisGame.gameState.currentFrame;
         playerRobotSprite.currentFrameKey = 0;
-        playerRobotSprite.spriteObject = newCanvasSprite(
+        playerRobotSprite.spriteObject = thisGame.newCanvasSprite(
             robotSpriteKey,
             playerRobotSprite.filePath,
             playerRobotSprite.frameSize,
@@ -871,7 +807,7 @@
         robotEnergySprite.basePosition = [statusPositionX, statusPositionY, statusPositionZ];
         robotEnergySprite.globalFrameStart = thisGame.gameState.currentFrame;
         robotEnergySprite.currentFrameKey = 0;
-        robotEnergySprite.spriteObject = newCanvasSprite(
+        robotEnergySprite.spriteObject = thisGame.newCanvasSprite(
             energySpriteKey,
             robotEnergySprite.filePath,
             robotEnergySprite.frameWidth,
@@ -882,110 +818,6 @@
             );
         thisGame.gameSpriteIndex[energySpriteKey] = robotEnergySprite;
         updateCanvasSpriteRenderOrder()
-
-    }
-
-
-    // -- FIELD FUNCTIONS -- //
-
-    // Define a function for dynamically changing the battle field
-    function changeBattleField(battleField){
-        debug('canvasGameEngine.changeBattleField()', battleField);
-
-        // Copy over the field name manually intro current
-        thisGame.battleField.fieldName = battleField.fieldName;
-
-        // Defer the background and foreground updates to dedicated functions
-        changeBattleFieldBackground(battleField.fieldBackground);
-        changeBattleFieldForeground(battleField.fieldForeground);
-
-    }
-
-    // Define a function for dynamically changing the battle field background
-    function changeBattleFieldBackground(battleFieldBackground){
-        debug('canvasGameEngine.changeBattleFieldBackground()', battleFieldBackground);
-
-        // Clone the provided field background and copy into current
-        var fieldBackground = cloneObject(battleFieldBackground);
-
-        // Wait for the new background to load before updating the game sprite
-        resourceIndex.loadFile(fieldBackground.filePath, function(){
-            loadFieldBackgroundSprite(fieldBackground);
-            });
-
-    }
-
-    // Define a function for dynamically changing the battle field foreground
-    function changeBattleFieldForeground(battleFieldForeground){
-        debug('canvasGameEngine.changeBattleFieldForeground()', battleFieldForeground);
-
-        // Clone the provided field foreground and copy into current
-        var fieldForeground = cloneObject(battleFieldForeground);
-
-        // Wait for the new forground to load before updating the game sprite
-        resourceIndex.loadFile(fieldForeground.filePath, function(){
-            loadFieldForegroundSprite(fieldForeground);
-            });
-
-    }
-
-    // Define a function for generating and loading field background sprite
-    function loadFieldBackgroundSprite(fieldBackground){
-        debug('canvasGameEngine.loadFieldBackgroundSprite()', fieldBackground);
-
-        // Update the parent field object with the background change
-        thisGame.battleField.fieldBackground = fieldBackground;
-
-        // Generate a new sprite for the field background
-        var spriteIndexKey = 'fieldBackground';
-        fieldBackground.globalFrameStart = thisGame.gameState.currentFrame;
-        fieldBackground.currentFrameKey = 0;
-        fieldBackground.spriteObject = newCanvasSprite(
-            spriteIndexKey,
-            fieldBackground.objectPath + 'background.png',
-            thisGame.gameSettings.baseBackgroundWidth,
-            thisGame.gameSettings.baseBackgroundHeight,
-            fieldBackground.frameLayout,
-            fieldBackground.frameSpeed,
-            fieldBackground.frameSequence,
-            fieldBackground.frameSync
-            );
-
-        // Add generated field sprite to the parent index
-        thisGame.gameSpriteIndex[spriteIndexKey] = fieldBackground;
-
-        // Refresh the sprite rendering order
-        updateCanvasSpriteRenderOrder();
-
-    }
-
-    // Define a function for generating and loading field background sprite
-    function loadFieldForegroundSprite(fieldForeground){
-        debug('canvasGameEngine.loadFieldForegroundSprite()', fieldForeground);
-
-        // Update the parent field object with the foreground change
-        thisGame.battleField.fieldForeground = fieldForeground;
-
-        // Generate a new sprite for the field foreground
-        var spriteIndexKey = 'fieldForeground';
-        fieldForeground.globalFrameStart = thisGame.gameState.currentFrame;
-        fieldForeground.currentFrameKey = 0;
-        fieldForeground.spriteObject = newCanvasSprite(
-            spriteIndexKey,
-            fieldForeground.objectPath + 'foreground.png',
-            thisGame.gameSettings.baseForegroundWidth,
-            thisGame.gameSettings.baseForegroundHeight,
-            fieldForeground.frameLayout,
-            fieldForeground.frameSpeed,
-            fieldForeground.frameSequence,
-            fieldForeground.frameSync
-            );
-
-        // Add generated field sprite to the parent index
-        thisGame.gameSpriteIndex[spriteIndexKey] = fieldForeground;
-
-        // Refresh the sprite rendering order
-        updateCanvasSpriteRenderOrder();
 
     }
 
@@ -1416,10 +1248,10 @@
     // -- UTILITY FUNCTIONS -- //
 
     // Utility method to extend defaults with user options
-    function extendSettings(source, properties){
-        debug('canvasGameEngine.extendSettings(source, properties)', source, properties);
+    function extendGameSettings(source, properties){
+        debug('canvasGameEngine.extendGameSettings(source, properties)', source, properties);
 
-        var newSource = cloneObject(source);
+        var newSource = cloneGameObject(source);
         var property;
         for (property in properties){
             if (properties.hasOwnProperty(property)){
@@ -1432,9 +1264,12 @@
     }
 
     // Utility function for cloning a setting to prevent reference
-    function cloneObject(sourceObject){
+    function cloneGameObject(sourceObject){
         return JSON.parse(JSON.stringify(sourceObject));
     }
+
+
+    // -- DEBUG FUNCTIONS -- //
 
     // Utility method for printing console debug info
     function debug(){
@@ -1458,6 +1293,22 @@
         thisGame.gameSettings.showDebug = false;
         return;
     }
+
+
+    // -- PUBLIC FUNCTIONS -- //
+
+    // Assign debug functions to the prototype so modules have access
+    canvasGameEngine.prototype.debug = debug;
+    canvasGameEngine.prototype.showDebug = showDebug;
+    canvasGameEngine.prototype.hideDebug = hideDebug;
+
+    // Assign utility functions to the prototype so modules have access
+    canvasGameEngine.prototype.extendGameSettings = extendGameSettings;
+    canvasGameEngine.prototype.cloneGameObject = cloneGameObject;
+
+    // Assign canvas functions to the prototype so modules have access
+    canvasGameEngine.prototype.newCanvasSprite = newCanvasSprite;
+    canvasGameEngine.prototype.updateCanvasSpriteRenderOrder = updateCanvasSpriteRenderOrder;
 
 
 }(jQuery));
