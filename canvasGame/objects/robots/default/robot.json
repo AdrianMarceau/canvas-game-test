@@ -7,6 +7,27 @@
     "robotSprite": {
         "fileName": "{kind}_{dir}_{size}.png",
         "frameSpeed": 1,
-        "frameSequence": [0, 1, 2, 1]
+        "frameSequence": [0, 1, 2, 4, 5, 6, 7, 8, 10],
+        "frameAnimationSequence": [{
+            // pan right
+            "startPosition": [-10, 0],
+            "endPosition": [20, 0],
+            "frameDuration": 60
+            }, {
+            // pan left
+            "startPosition": [20, 0],
+            "endPosition": [-10, 0],
+            "frameDuration": 60
+            }, {
+            // pan up
+            "startPosition": [-10, 0],
+            "endPosition": [-10, -10],
+            "frameDuration": 60
+            }, {
+            // pan down
+            "startPosition": [-10, -10],
+            "endPosition": [-10, 0],
+            "frameDuration": 60
+            }]
         }
     }
