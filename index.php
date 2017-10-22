@@ -39,9 +39,18 @@ require('canvasGame/config.php');
                     </div>
                     <?
 
+                    // Define the teams we should display as options
+                    $debug_teams = array();
+                    $debug_teams['thisTeam'] = 'Hero';
+                    $debug_teams['targetTeam'] = 'Enemy';
+
                     // Define the fields we should display as options
                     $debug_fields = array();
-                    $debug_fields['default'] = 'None';
+                    $debug_fields['default'] = 'Default';
+
+                    // Define the robots we should display as options
+                    $debug_robots = array();
+                    $debug_robots['default'] = 'Default';
 
                     ?>
                     <div style="text-align: left; overflow: hidden;">
@@ -63,21 +72,28 @@ require('canvasGame/config.php');
                                 <a class="button" onclick="javascript:canvasGame.changeFieldForeground('<?= $field_token ?>');"><?= $field_name ?></a>
                             <? } ?>
                         </div>
+                        <? $team_key = 0; foreach ($debug_teams as $team_token => $team_name) { ?>
+                            <div style="background-color: rgba(0, 0, 0, <?= $team_key % 2 == 0 ? 0.1 : 0.2 ?>); padding: 3px 9px;">
+                                <strong style="display: inline-block; min-width: 125px;">Add <?= $team_name ?> Robot:</strong>
+                                <? foreach ($debug_robots as $robot_token => $robot_name) { ?>
+                                    <a class="button" onclick="javascript:
+                                        canvasGame.loadBattleRobot('<?= $team_token ?>',
+                                            canvasGame.battleRobots['<?= $team_token ?>'].length,
+                                            '<?= $robot_token ?>',
+                                            canvasGame.findFirstEmptyCell('<?= $team_token ?>'),
+                                            '<?= $team_key % 2 == 0 ? 'left' : 'right' ?>'
+                                            );
+                                        "><?= $robot_name ?></a>
+                                <? } ?>
+                            </div>
+                        <? $team_key++; } ?>
                         <div style="background-color: rgba(0, 0, 0, 0.1); padding: 3px 9px;">
                             <strong style="display: inline-block; min-width: 125px;">Change Speed:</strong>
                             <a class="button" onclick="javascript:canvasGame.makeGameSlower();">Slower</a>
                             <a class="button" onclick="javascript:canvasGame.resetGameSpeed();">Reset</a>
                             <a class="button" onclick="javascript:canvasGame.makeGameFaster();">Faster</a>
                         </div>
-                        <div style="background-color: rgba(0, 0, 0, 0.2); padding: 3px 9px;">
-                            <strong style="display: inline-block; min-width: 125px;">Add New Robot:</strong>
-                            <a class="button" onclick="javascript:
-                                canvasGame.loadBattleRobot('thisTeam', canvasGame.battleRobots.thisTeam.length, 'default', canvasGame.findFirstEmptyCell('thisTeam'), 'left');
-                                ">This Team</a>
-                            <a class="button" onclick="javascript:
-                                canvasGame.loadBattleRobot('targetTeam', canvasGame.battleRobots.targetTeam.length, 'default', canvasGame.findFirstEmptyCell('targetTeam'), 'right');
-                                ">Target Team</a>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -106,16 +122,12 @@ require('canvasGame/config.php');
 
         // Define default hero robots for the game
         battleConfig.baseBattleRobots.thisTeam = [
-            ['default', 'C2'],
-            ['default', 'B1'],
-            ['default', 'B3']
+            ['default', 'B2'],
             ];
 
         // Define default enemy robots for the game
         battleConfig.baseBattleRobots.targetTeam = [
-            ['default', 'C2'],
-            ['default', 'B1'],
-            ['default', 'B3']
+            ['default', 'B2'],
             ];
 
     </script>
