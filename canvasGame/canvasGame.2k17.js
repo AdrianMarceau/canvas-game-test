@@ -149,6 +149,7 @@
             var baseBattleRobots = thisGame.gameSettings.baseBattleRobots;
             var battleTeamKey = 0;
             for (var battleTeam in baseBattleRobots){
+                thisGame.battleRobots[battleTeam] = [];
                 var battleTeamRobots = baseBattleRobots[battleTeam];
                 var battleTeamSide = battleTeamKey === 0 ? 'left' : 'right';
                 for (var robotKey in battleTeamRobots){
