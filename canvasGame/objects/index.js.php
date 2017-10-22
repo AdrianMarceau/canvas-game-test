@@ -83,7 +83,7 @@ foreach ($this_object_files AS $this_file_dir){
     $this_json_string = json_encode($this_json_array);
 
     // Pass this JSON object data into the index class via function call
-    echo '// '.strtoupper(dirname($this_file_basepath)).PHP_EOL;
+    echo '// '.strtoupper($this_object_path.$this_json_array[$this_object_token.'Token']).PHP_EOL;
     echo $this_object_class_name.'.'.$this_object_class_function.'('.trim($this_json_string).');'.PHP_EOL;
 
 }
