@@ -63,18 +63,6 @@
 
     }
 
-    // Define a public function for loading field sprites given current config
-    thisGame.loadFieldSprites = function(){
-        //console.log('canvasBattleField.loadFieldSprites()');
-
-        // Load the field background sprite
-        loadFieldBackgroundSprite(thisGame.battleField.fieldBackground);
-
-        // Load the field foreground sprite
-        loadFieldForegroundSprite(thisGame.battleField.fieldForeground);
-
-    }
-
 
     // -- PRIVATE FUNCTIONS -- //
 
@@ -219,6 +207,21 @@
                 thisGame.setField('default');
                 }
             }
+
+        // Return true on success
+        return true;
+
+        });
+
+    // Define a custom canvas load action for the game engine
+    thisGame.loadCanvasActions.push(function(){
+        //console.log('thisGame.loadCanvasActions[\'canvasBattleField\']');
+
+        // Load the field background sprite
+        loadFieldBackgroundSprite(thisGame.battleField.fieldBackground);
+
+        // Load the field foreground sprite
+        loadFieldForegroundSprite(thisGame.battleField.fieldForeground);
 
         // Return true on success
         return true;

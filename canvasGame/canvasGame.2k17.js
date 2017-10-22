@@ -84,7 +84,7 @@
 
     // Action Callbacks
     var gameStartActions = [];
-
+    var loadCanvasActions = [];
 
     // -- PUBLIC METHODS -- //
 
@@ -111,25 +111,18 @@
         thisGame.gameSpriteRenderOrder = gameSpriteRenderOrder;
 
         thisGame.gameStartActions = gameStartActions;
-
-        //console.log('checkpoint 1');
+        thisGame.loadCanvasActions = loadCanvasActions;
 
         // Define game settings defaults
         var defaultSettings = gameSettings;
-
-        //console.log('checkpoint 2');
 
         // Create settings by extending defaults with the passed in arugments
         var customSettings = arguments[0] && typeof arguments[0] === "object" ? arguments[0] : {};
         thisGame.gameSettings = extendGameSettings(defaultSettings, customSettings);
 
-        //console.log('checkpoint 3');
-
         // Initialize the game engine with callback if provided
         var readyCallback = typeof arguments[1] === 'function' ? arguments[1] : function(){};
         loadEngine(readyCallback);
-
-        //console.log('checkpoint 4');
 
     }
 
@@ -152,8 +145,16 @@
         resourceIndex.loadFiles(thisGame.gameImages, function(){
             //console.log('resourceIndex.loadFiles() complete!', thisGame.gameImages);
 
-            // Load all the canvas sprites
-            loadCanvasSprites();
+            // Loop through game start actions and execute one by one
+            if (thisGame.loadCanvasActions.length){
+                for (var actionKey in thisGame.loadCanvasActions){
+                    var thisAction = thisGame.loadCanvasActions[actionKey];
+                    if (typeof thisAction === 'function'){
+                        if (thisAction() === true){ continue; }
+                        else { continue; }
+                        }
+                    }
+                }
 
             // Start the game
             startGame(startCallback);
@@ -179,6 +180,8 @@
     function loadEngine(readyCallback){
         //console.log('canvasGameEngine.loadEngine()');
 
+        /* -- Define Settings -- */
+
         // Define object references to HTML elements
         thisGame.gameWindow.rootDiv = $(thisGame.gameSettings.htmlClass);
         thisGame.gameWindow.canvasDiv = $(thisGame.gameSettings.htmlCanvasClass, thisGame.gameWindow.rootDiv);
@@ -191,6 +194,22 @@
             parentElement: thisGame.gameWindow.rootDiv,
             baseHref: thisGame.gameSettings.baseHref
             });
+
+        /* -- Queue Actions -- */
+
+        // Queue up canvas onload functions for the core game engine
+        thisGame.loadCanvasActions.push(function(){
+            //console.log('thisGame.loadCanvasActions[\'canvasGameEngine\']');
+
+            // Load all the canvas sprites
+            loadCanvasSprites();
+
+            // Return true on success
+            return true;
+
+            });
+
+        /* -- Load Scripts, Then Return -- */
 
         // Generate a list of full script URLs to load first
         var gameScriptURLs = [];
@@ -425,9 +444,6 @@
     // Define a function for loading all of the game's sprites
     function loadCanvasSprites(){
         //console.log('canvasGameEngine.loadCanvasSprites()');
-
-        // Load the field sprites into the canvas
-        thisGame.loadFieldSprites();
 
 
         // TEST OPERATOR SPRITES //
