@@ -202,4 +202,35 @@
     }
 
 
+    // -- GAME EVENT FUNCTIONS -- //
+
+    // Define a custom start action for the game engine
+    thisGame.gameStartActions.push(function(){
+        //console.log('thisGame.gameStartActions[\'canvasBattleField\']');
+
+        // If the field has not been set, fallback to detail
+        if (typeof thisGame.battleField.fieldName === 'undefined'
+            || typeof thisGame.battleField.fieldBackground === 'undefined'
+            || typeof thisGame.battleField.fieldForeground === 'undefined'){
+            if (typeof thisGame.gameSettings.baseFieldToken !== 'undefined'){
+                var baseBattleField = thisGame.gameSettings.baseFieldToken;
+                thisGame.setField(baseBattleField);
+                } else {
+                thisGame.setField('default');
+                }
+            }
+
+        // Return true on success
+        return true;
+
+        });
+
+
+    // -- ONLOAD ACTIONS -- //
+
+    // Preload the compiled field object index
+    thisGame.gameScriptIndexes.push('objects/index.js.php?type=fields');
+    //console.log('thisGame.gameScriptIndexes.push(\'objects/index.js.php?type=fields\');', thisGame.gameScriptIndexes);
+
+
 }(window.thisCanvasGame));

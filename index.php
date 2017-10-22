@@ -113,6 +113,7 @@ require('canvasGame/config.php');
     <script type="text/javascript">
 
         // Update environments for the game
+        battleConfig.cacheDate = '<?= CANVASGAME_CACHE_DATE ?>';
         battleConfig.baseHref = '<?= CANVASGAME_BASE_HREF ?>';
         battleConfig.baseCorePath = '<?= CANVASGAME_CORE_PATH ?>';
         battleConfig.baseCustomPath = '<?= CANVASGAME_CUSTOM_PATH ?>';

@@ -8,6 +8,8 @@
 
 (function($){
 
+    var cacheDate = '2017';
+
     var parentElement = null;
 
     var baseHref = '';
@@ -24,6 +26,7 @@
     function setup(config){
         //console.log('resourceIndex.setup(config)', config);
 
+        if (typeof config.cacheDate !== 'undefined'){ cacheDate = config.cacheDate; }
         if (typeof config.parentElement !== 'undefined'){ parentElement = config.parentElement; }
         if (typeof config.baseHref !== 'undefined'){ baseHref = config.baseHref; }
 
@@ -110,7 +113,7 @@
 
         var imageFile = new Image();
         imageFile.onload = function(){
-            var fileURL = this.src.replace(baseHref, '');
+            var fileURL = removeCacheDate(this.src.replace(baseHref, ''));
             loadedFileURLs.push(fileURL);
             //console.log('\t loadedFileURLs.push('+fileURL+');');
             resourceIndex[fileURL] = this;
@@ -121,7 +124,7 @@
             };
 
         //resourceIndex[fileURL] = false;
-        imageFile.src = fileURL;
+        imageFile.src = appendCacheDate(fileURL);
 
     }
 
@@ -140,7 +143,7 @@
 
             var imageFile = new Image();
             imageFile.onload = function(){
-                var fileURL = this.src.replace(baseHref, '');
+                var fileURL = removeCacheDate(this.src.replace(baseHref, ''));
                 loadedFileURLs.push(fileURL);
                 //console.log('\t loadedFileURLs.push("'+fileURL+'");');
                 resourceIndex[fileURL] = this;
@@ -160,7 +163,7 @@
             var fileURL = fileURLs[i];
             var imageFile = imageFiles[i];
 
-            imageFile.src = fileURL;
+            imageFile.src = appendCacheDate(fileURL);
 
             }
 
@@ -183,7 +186,7 @@
         scriptFile.async = typeof useAsync === 'boolean' ? useAsync : true;
         scriptFile.addEventListener('load', function(e){
             //self.loaded(e);
-            var fileURL = this.src.replace(baseHref, '');
+            var fileURL = removeCacheDate(this.src.replace(baseHref, ''));
             loadedFileURLs.push(fileURL);
             //console.log('\t loadedFileURLs.push('+fileURL+');');
             resourceIndex[fileURL] = this;
@@ -193,7 +196,7 @@
                 }
             }, false);
 
-        scriptFile.src = fileURL;
+        scriptFile.src = appendCacheDate(fileURL);
         scriptHead.appendChild(scriptFile);
 
     }
@@ -217,7 +220,7 @@
             scriptFile.async = typeof useAsync === 'boolean' ? useAsync : true;
             scriptFile.addEventListener('load', function(e){
                 //self.loaded(e);
-                var fileURL = this.src.replace(baseHref, '');
+                var fileURL = removeCacheDate(this.src.replace(baseHref, ''));
                 loadedFileURLs.push(fileURL);
                 //console.log('\t loadedFileURLs.push('+fileURL+');');
                 resourceIndex[fileURL] = this;
@@ -237,10 +240,27 @@
             var fileURL = fileURLs[i];
             var scriptFile = scriptFiles[i];
 
-            scriptFile.src = fileURL;
+            scriptFile.src = appendCacheDate(fileURL);
             scriptHead.appendChild(scriptFile);
 
             }
+
+    }
+
+
+    // -- UTILITY FUNCTIONS -- //
+
+    // Define a function for appending the cache date to a URL
+    function appendCacheDate(fileURL){
+        if (fileURL.indexOf('?') === -1){ var newFileURL = fileURL+'?'+cacheDate; }
+        else { var newFileURL = fileURL+'&'+cacheDate; }
+        return newFileURL;
+    }
+
+    // Define a function for removing the cache date from a URL
+    function removeCacheDate(fileURL){
+        var newFileURL = fileURL.replace('?'+cacheDate, '').replace('&'+cacheDate, '');
+        return newFileURL;
 
     }
 
@@ -260,7 +280,7 @@
         var isReady = true;
 
         for (i in fileURLs){
-            var fileURL = fileURLs[i].replace(baseHref, '');
+            var fileURL = removeCacheDate(fileURLs[i].replace(baseHref, ''));
             //console.log('\t loadedFileURLs.indexOf('+fileURL+') = ', loadedFileURLs.indexOf(fileURL));
             if (loadedFileURLs.indexOf(fileURL) === -1){
                 isReady = false;
