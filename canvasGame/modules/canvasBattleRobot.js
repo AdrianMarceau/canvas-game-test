@@ -385,41 +385,21 @@
 
         var battleFieldForeground = thisGame.battleField.fieldForeground;
         var battleFieldForegroundSprite = thisGame.gameSpriteIndex['fieldForeground'];
+        var battleFieldForegroundSpriteDiff = thisGame.getCanvasSpritePositionDiff(battleFieldForegroundSprite);
         //console.log('\t battleFieldForeground = ', battleFieldForeground);
         //console.log('\t battleFieldForegroundSprite = ', battleFieldForegroundSprite);
 
-        // If the battlefield itself has moved at all, we should adjust the cell too
-        if (typeof battleFieldForegroundSprite !== 'undefined'
-            && typeof battleFieldForegroundSprite.currentPosition !== 'undefined'){
-            //console.log('\t battleFieldForegroundSprite exists and has position...');
-
-            if ((battleFieldForegroundSprite.currentPosition[0] != battleFieldForegroundSprite.basePosition[0])
-                || (battleFieldForegroundSprite.currentPosition[1] != battleFieldForegroundSprite.basePosition[1])
-                || (battleFieldForegroundSprite.currentPosition[2] != battleFieldForegroundSprite.basePosition[2])){
-                //console.log('\t adjust robot cell by battle field position change...');
-
-                // Collect the X and Y position difference from base value
-                var foregroundDiffX = battleFieldForegroundSprite.currentPosition[0] - battleFieldForegroundSprite.basePosition[0];
-                var foregroundDiffY = battleFieldForegroundSprite.currentPosition[1] - battleFieldForegroundSprite.basePosition[1];
-                var foregroundDiffZ = battleFieldForegroundSprite.currentPosition[2] - battleFieldForegroundSprite.basePosition[2];
-                //console.log('\t foregroundDiffX = ', foregroundDiffX);
-                //console.log('\t foregroundDiffY = ', foregroundDiffY);
-                //console.log('\t foregroundDiffZ = ', foregroundDiffZ);
-
-                // Apply these X and Y mods to the cell position itself
-                //console.log('\t robotCellPosition[0](before) = ', robotCellPosition[0]);
-                //console.log('\t robotCellPosition[1](before) = ', robotCellPosition[1]);
-                //console.log('\t robotCellPosition[2](before) = ', robotCellPosition[2]);
-                if (robotDirection === 'left'){ robotCellPosition[0] += foregroundDiffX; }
-                else if (robotDirection === 'right'){ robotCellPosition[0] -= foregroundDiffX; }
-                robotCellPosition[1] += foregroundDiffY;
-                robotCellPosition[2] += foregroundDiffZ;
-                //console.log('\t robotCellPosition[0](after) = ', robotCellPosition[0]);
-                //console.log('\t robotCellPosition[1](after) = ', robotCellPosition[1]);
-                //console.log('\t robotCellPosition[2](after) = ', robotCellPosition[2]);
-
-                }
-            }
+        // Apply these X and Y mods to the cell position itself
+        //console.log('\t robotCellPosition[0](before) = ', robotCellPosition[0]);
+        //console.log('\t robotCellPosition[1](before) = ', robotCellPosition[1]);
+        //console.log('\t robotCellPosition[2](before) = ', robotCellPosition[2]);
+        if (robotDirection === 'left'){ robotCellPosition[0] += battleFieldForegroundSpriteDiff[0]; }
+        else if (robotDirection === 'right'){ robotCellPosition[0] -= battleFieldForegroundSpriteDiff[0]; }
+        robotCellPosition[1] += battleFieldForegroundSpriteDiff[1];
+        robotCellPosition[2] += battleFieldForegroundSpriteDiff[2];
+        //console.log('\t robotCellPosition[0](after) = ', robotCellPosition[0]);
+        //console.log('\t robotCellPosition[1](after) = ', robotCellPosition[1]);
+        //console.log('\t robotCellPosition[2](after) = ', robotCellPosition[2]);
 
         // Return the calculated robot cell position
         return robotCellPosition;
