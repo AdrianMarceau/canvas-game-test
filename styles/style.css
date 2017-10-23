@@ -127,6 +127,7 @@ body > .wrapper {
 .game .console .wrap,
 .game .buttons .wrap {
     padding: 10px;
+    overflow-y: auto;
 }
 
 
@@ -137,14 +138,71 @@ body > .wrapper {
     -o-user-select: none;
     user-select: none;
 }
+
+.game .buttons .menu {
+    display: block;
+    clear: both;
+    padding-bottom: 4px;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+}
+.game .buttons .menu.main {
+    text-align: center;
+}
+.game .buttons .menu.debug {
+    text-align: left;
+}
+
+.game .buttons .menu .group {
+    display: block;
+    padding: 3px 9px 0;
+    box-sizing: border-box;
+}
+.game .buttons .menu .group:after {
+    content: " ";
+    display: block;
+    clear: both;
+    height: 0;
+}
+.game .buttons .menu .group .group {
+    padding-left: 0;
+    padding-right: 0;
+}
+.game .buttons .menu .group:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+.game .buttons .menu .group:nth-child(odd) {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+.game .buttons .menu .group:nth-child(even) .group,
+.game .buttons .menu .group:nth-child(odd) .group {
+    background-color: transparent;
+}
+.game .buttons .menu .group .label {
+    display: block;
+    margin: 0 auto 2px;
+}
+.game .buttons .menu .group .group .label {
+
+}
+
 .game .buttons .button {
     display: inline-block;
     padding: 3px 6px;
-    margin: 0 6px 6px;
+    margin: 0 3px 3px 0;
     border: 1px solid #191919;
     background-color: #2b2b2b;
     border-radius: 3px;
     cursor: pointer;
+    min-width: 55px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.game .buttons .menu.main .button.pause,
+.game .buttons .menu.main .button.debug {
+    font-size: 110%;
+    padding: 4px 8px;
 }
 .game .buttons .button:hover {
     background-color: #3b3b3b;

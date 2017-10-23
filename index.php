@@ -33,7 +33,7 @@ require('canvasGame/config.php');
 
             <div class="buttons">
                 <div class="wrap">
-                    <div style="clear: both; padding-bottom: 4px;">
+                    <div class="menu main">
                         <a class="button pause" data-state="on">Pause Game</a>
                         <a class="button debug" data-state="off">Show Debug</a>
                     </div>
@@ -53,45 +53,43 @@ require('canvasGame/config.php');
                     $debug_robots['default'] = 'Default';
 
                     ?>
-                    <div style="text-align: left; overflow: hidden;">
-                        <div style="background-color: rgba(0, 0, 0, 0.2); padding: 3px 9px;">
-                            <strong style="display: inline-block; min-width: 125px;">Change Field:</strong>
+                    <div class="menu debug">
+                        <div class="group" style="text-align: center;">
+                            <strong class="label">Change Field:</strong>
                             <? foreach ($debug_fields as $field_token => $field_name) { ?>
                                 <a class="button" onclick="javascript:canvasGame.changeField('<?= $field_token ?>');"><?= $field_name ?></a>
                             <? } ?>
                         </div>
-                        <div style="background-color: rgba(0, 0, 0, 0.1); padding: 3px 9px;">
-                            <strong style="display: inline-block; min-width: 125px;">Change Background:</strong>
-                            <? foreach ($debug_fields as $field_token => $field_name) { ?>
-                                <a class="button" onclick="javascript:canvasGame.changeFieldBackground('<?= $field_token ?>');"><?= $field_name ?></a>
-                            <? } ?>
-                        </div>
-                        <div style="background-color: rgba(0, 0, 0, 0.2); padding: 3px 9px;">
-                            <strong style="display: inline-block; min-width: 125px;">Change Foreground:</strong>
-                            <? foreach ($debug_fields as $field_token => $field_name) { ?>
-                                <a class="button" onclick="javascript:canvasGame.changeFieldForeground('<?= $field_token ?>');"><?= $field_name ?></a>
-                            <? } ?>
-                        </div>
-                        <? $team_key = 0; foreach ($debug_teams as $team_token => $team_name) { ?>
-                            <div style="background-color: rgba(0, 0, 0, <?= $team_key % 2 == 0 ? 0.1 : 0.2 ?>); padding: 3px 9px;">
-                                <strong style="display: inline-block; min-width: 125px;">Add <?= $team_name ?> Robot:</strong>
-                                <? foreach ($debug_robots as $robot_token => $robot_name) { ?>
-                                    <a class="button" onclick="javascript:
-                                        canvasGame.loadBattleRobot('<?= $team_token ?>',
-                                            canvasGame.battleRobots['<?= $team_token ?>'].length,
-                                            '<?= $robot_token ?>',
-                                            canvasGame.findFirstEmptyCell('<?= $team_token ?>'),
-                                            '<?= $team_key % 2 == 0 ? 'left' : 'right' ?>'
-                                            );
-                                        "><?= $robot_name ?></a>
+                        <div class="group">
+                            <div class="group" style="float: left; width: 50%;">
+                                <strong class="label">Change Background:</strong>
+                                <? foreach ($debug_fields as $field_token => $field_name) { ?>
+                                    <a class="button" onclick="javascript:canvasGame.changeFieldBackground('<?= $field_token ?>');"><?= $field_name ?></a>
                                 <? } ?>
                             </div>
-                        <? $team_key++; } ?>
-                        <div style="background-color: rgba(0, 0, 0, 0.1); padding: 3px 9px;">
-                            <strong style="display: inline-block; min-width: 125px;">Change Speed:</strong>
-                            <a class="button" onclick="javascript:canvasGame.makeGameSlower();">Slower</a>
-                            <a class="button" onclick="javascript:canvasGame.resetGameSpeed();">Reset</a>
-                            <a class="button" onclick="javascript:canvasGame.makeGameFaster();">Faster</a>
+                            <div class="group" style="float: right; width: 50%;">
+                                <strong class="label">Change Foreground:</strong>
+                                <? foreach ($debug_fields as $field_token => $field_name) { ?>
+                                    <a class="button" onclick="javascript:canvasGame.changeFieldForeground('<?= $field_token ?>');"><?= $field_name ?></a>
+                                <? } ?>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <? $team_key = 0; foreach ($debug_teams as $team_token => $team_name) { ?>
+                                <div class="group" style="float: <?= $team_key % 2 == 0 ? 'left' : 'right' ?>; width: 50%;">
+                                    <strong class="label">Add <?= $team_name ?> Robot:</strong>
+                                    <? foreach ($debug_robots as $robot_token => $robot_name) { ?>
+                                        <a class="button" onclick="javascript:
+                                            canvasGame.loadBattleRobot('<?= $team_token ?>',
+                                                canvasGame.battleRobots['<?= $team_token ?>'].length,
+                                                '<?= $robot_token ?>',
+                                                canvasGame.findFirstEmptyCell('<?= $team_token ?>'),
+                                                '<?= $team_key % 2 == 0 ? 'left' : 'right' ?>'
+                                                );
+                                            "><?= $robot_name ?></a>
+                                    <? } ?>
+                                </div>
+                            <? $team_key++; } ?>
                         </div>
 
                     </div>
