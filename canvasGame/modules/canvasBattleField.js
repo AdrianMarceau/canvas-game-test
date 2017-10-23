@@ -238,17 +238,26 @@
         var fieldForegroundPanels = {
             globalFrameStart: thisGame.gameState.currentFrame,
             filePath: thisGame.gameSettings.baseCorePath + 'images/field-panels_default.png',
-            basePosition: [panelPositionX, panelPositionY, 30],
-            currentPosition: [panelPositionX, panelPositionY, 30],
+            basePosition: [panelPositionX, panelPositionY, 30, 1],
+            currentPosition: [panelPositionX, panelPositionY, 30, 1],
             frameWidth: thisGame.gameSettings.baseForegroundWidth,
             frameHeight: thisGame.gameSettings.baseForegroundHeight,
             frameSpeed: 1,
             frameLayout: 'vertical',
             frameSequence: [0],
-            frameAnimationSequence: [],
+            frameAnimationSequence: [{
+                // fade in
+                "startPosition": [0, 0, 0, 0.3],
+                "endPosition": [0, 0, 0, 0.6],
+                "frameDuration": 60
+                }, {
+                // fade out
+                "startPosition": [0, 0, 0, 0.6],
+                "endPosition": [0, 0, 0, 0.3],
+                "frameDuration": 60
+                }],
             frameSync: false,
-            currentFrameKey: 0,
-            currentOpacity: 0.3
+            currentFrameKey: 0
             };
         fieldForegroundPanels.spriteObject = thisGame.newCanvasSprite(
             spriteIndexKey,

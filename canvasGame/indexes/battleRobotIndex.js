@@ -19,8 +19,8 @@
         robotPosition: 'B2',
         robotMug: {
             filePath: 'images/robots/default/mug_{dir}_{size}.png',
-            basePosition: [0, 0, 1000],
-            currentPosition: [0, 0, 1000],
+            basePosition: [0, 0, 1000, 1],
+            currentPosition: [0, 0, 1000, 1],
             baseOpacity: 1,
             currentOpacity: 1,
             frameLayout: 'horizontal',
@@ -33,8 +33,8 @@
             },
         robotSprite: {
             filePath: 'images/robots/default/{kind}_{dir}_{size}.png',
-            basePosition: [0, 0, 100],
-            currentPosition: [0, 0, 100],
+            basePosition: [0, 0, 100, 1],
+            currentPosition: [0, 0, 100, 1],
             baseOpacity: 1,
             currentOpacity: 1,
             frameLayout: 'horizontal',

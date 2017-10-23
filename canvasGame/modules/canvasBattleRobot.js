@@ -237,8 +237,8 @@
         var energySpriteKey = robotSpriteKey + '/energy';
         var robotEnergySprite = {
             filePath: thisGame.gameSettings.baseCorePath + 'images/robot-status_'+battleTeamRobots[robotKey].robotDirection+'.png',
-            basePosition: [0, 0, 0],
-            currentPosition: [0, 0, 0],
+            basePosition: [0, 0, 0, 1],
+            currentPosition: [0, 0, 0, 1],
             frameWidth: 26,
             frameHeight: 71,
             frameSpeed: 1,
@@ -379,7 +379,6 @@
         if (typeof thisGame.battleField.fieldForeground.panelOffsetY !== 'undefined'){
             robotCellPosition[1] += thisGame.battleField.fieldForeground.panelOffsetY;
             }
-
         //console.log('thisGame.battleField.fieldForeground = ', thisGame.battleField.fieldForeground);
         //console.log('thisGame.gameSpriteIndex = ', thisGame.gameSpriteIndex);
 
@@ -390,16 +389,12 @@
         //console.log('\t battleFieldForegroundSprite = ', battleFieldForegroundSprite);
 
         // Apply these X and Y mods to the cell position itself
-        //console.log('\t robotCellPosition[0](before) = ', robotCellPosition[0]);
-        //console.log('\t robotCellPosition[1](before) = ', robotCellPosition[1]);
-        //console.log('\t robotCellPosition[2](before) = ', robotCellPosition[2]);
+        //console.log('\t robotCellPosition(before) = ', robotCellPosition);
         if (robotDirection === 'left'){ robotCellPosition[0] += battleFieldForegroundSpriteDiff[0]; }
         else if (robotDirection === 'right'){ robotCellPosition[0] -= battleFieldForegroundSpriteDiff[0]; }
         robotCellPosition[1] += battleFieldForegroundSpriteDiff[1];
         robotCellPosition[2] += battleFieldForegroundSpriteDiff[2];
-        //console.log('\t robotCellPosition[0](after) = ', robotCellPosition[0]);
-        //console.log('\t robotCellPosition[1](after) = ', robotCellPosition[1]);
-        //console.log('\t robotCellPosition[2](after) = ', robotCellPosition[2]);
+        //console.log('\t robotCellPosition(after) = ', robotCellPosition);
 
         // Return the calculated robot cell position
         return robotCellPosition;

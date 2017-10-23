@@ -17,8 +17,8 @@
         fieldName: 'Battle Field',
         fieldBackground: {
             fileName: 'background.png',
-            basePosition: [-80, 0, 10],
-            currentPosition: [0, 0, 10],
+            basePosition: [-80, 0, 10, 1],
+            currentPosition: [0, 0, 10, 1],
             baseOpacity: 1,
             currentOpacity: 1,
             panelOffsetX: 0,
@@ -31,8 +31,8 @@
             },
         fieldForeground: {
             fileName: 'foreground.png',
-            basePosition: [-80, 0, 20],
-            currentPosition: [0, 0, 20],
+            basePosition: [-80, 0, 20, 1],
+            currentPosition: [0, 0, 20, 1],
             baseOpacity: 1,
             currentOpacity: 1,
             panelOffsetX: 0,

@@ -94,10 +94,16 @@
                     //currentAlpha = 0.5;
                 }
 
-                if (typeof thisSprite.currentOpacity === 'function'){
-                    currentAlpha = thisSprite.currentOpacity();
-                    } else if (typeof thisSprite.currentOpacity !== 'undefined'){
-                    currentAlpha = thisSprite.currentOpacity;
+                if (typeof thisSprite.basePosition[3] === 'function'){
+                    baseAlpha = thisSprite.basePosition[3]();
+                    } else if (typeof thisSprite.basePosition[3] !== 'undefined'){
+                    baseAlpha = thisSprite.basePosition[3];
+                    }
+
+                if (typeof thisSprite.currentPosition[3] === 'function'){
+                    currentAlpha = thisSprite.currentPosition[3]();
+                    } else if (typeof thisSprite.currentPosition[3] !== 'undefined'){
+                    currentAlpha = thisSprite.currentPosition[3];
                     }
 
                 ctx.globalAlpha = currentAlpha;
@@ -126,15 +132,17 @@
         //console.log('thisGameSpeed = ', thisGameSpeed);
 
         //console.log('\t canvasSprite = ', canvasSprite);
+        //console.log('-------------');
         //console.log('\t canvasSprite.filePath = ', canvasSprite.filePath);
 
         // Collect the base position before continuing
-        var basePosition = [0, 0, 0];
+        var basePosition = [0, 0, 0, 1];
         if (typeof canvasSprite.basePosition !== 'undefined'){
             basePosition = canvasSprite.basePosition;
             if (typeof basePosition[0] === 'function'){ basePosition[0] = basePosition[0](); }
             if (typeof basePosition[1] === 'function'){ basePosition[1] = basePosition[1](); }
             if (typeof basePosition[2] === 'function'){ basePosition[2] = basePosition[2](); }
+            if (typeof basePosition[3] === 'function'){ basePosition[3] = basePosition[3](); }
         }
 
         // If no animation steps were defined, we can return the base position as-is
@@ -200,11 +208,15 @@
         var spriteAnimationFrame = (currentRelativeFrame % totalAnimationStepFrames) + 1;
         //console.log('\t spriteAnimationFrame = ', spriteAnimationFrame);
 
-        var spriteAnimationOffset = typeof canvasSprite.basePosition != 'undefined' ? canvasSprite.basePosition : [0, 0];
+        var spriteAnimationOffset = typeof canvasSprite.basePosition != 'undefined' ? canvasSprite.basePosition : [0, 0, 0, 0];
+        if (typeof spriteAnimationOffset[0] !== 'number'){ spriteAnimationOffset[0] = 0; } // x-position
+        if (typeof spriteAnimationOffset[1] !== 'number'){ spriteAnimationOffset[1] = 0; } // y-position
+        if (typeof spriteAnimationOffset[2] !== 'number'){ spriteAnimationOffset[2] = 1; } // z-index
+        if (typeof spriteAnimationOffset[3] !== 'number'){ spriteAnimationOffset[3] = 1; } // opacity
         //console.log('\t canvasSprite.basePosition = ', canvasSprite.basePosition);
         //console.log('\t spriteAnimationOffset = ', spriteAnimationOffset);
 
-        var currentSpritePosition = [0, 0, 0];
+        var currentSpritePosition = [0, 0, 0, 1];
         var stepKey;
         for (stepKey = 0; stepKey < spriteAnimationTimeline.length; stepKey++){
             var stepData = canvasSprite.frameAnimationSequence[stepKey];
@@ -213,6 +225,8 @@
             //console.log('\t stepData = ', stepData);
             //console.log('\t stepRange = ', stepRange);
             if (spriteAnimationFrame >= stepRange[0] && spriteAnimationFrame <= stepRange[1]){
+
+                //console.log('-------------');
 
                 var currentStepKey = stepKey;
                 var currentStepNum = currentStepKey + 1;
@@ -228,6 +242,18 @@
                 //console.log('\t stepProgressMultiplier = ', stepProgressMultiplier);
                 //console.log('\t stepProgressPercent = ', stepProgressPercent+'%');
 
+                if (typeof stepData.startPosition[0] !== 'number'){ stepData.startPosition[0] = 0; }
+                if (typeof stepData.startPosition[1] !== 'number'){ stepData.startPosition[1] = 0; }
+                if (typeof stepData.startPosition[2] !== 'number'){ stepData.startPosition[2] = 0; }
+                if (typeof stepData.startPosition[3] !== 'number'){ stepData.startPosition[3] = spriteAnimationOffset[3]; }
+
+                if (typeof stepData.endPosition[0] !== 'number'){ stepData.endPosition[0] = 0; }
+                if (typeof stepData.endPosition[1] !== 'number'){ stepData.endPosition[1] = 0; }
+                if (typeof stepData.endPosition[2] !== 'number'){ stepData.endPosition[2] = 0; }
+                if (typeof stepData.endPosition[3] !== 'number'){ stepData.endPosition[3] = spriteAnimationOffset[3]; }
+
+                //console.log('\t stepData.startPosition = ', stepData.startPosition);
+                //console.log('\t stepData.endPosition = ', stepData.endPosition);
 
                 var xStart = stepData.startPosition[0];
                 var xEnd = stepData.endPosition[0];
@@ -262,11 +288,38 @@
                 //console.log('\t yOffset = ', yOffset);
                 //console.log('\t currentY = ', currentY);
 
-                var currentZ = basePosition[2];
+                var zStart = stepData.startPosition[2];
+                var zEnd = stepData.endPosition[2];
+                var zDiff = zStart - zEnd;
+                var zProg = Math.ceil(zDiff * stepProgressMultiplier) * -1;
+                var zOffset = typeof spriteAnimationOffset[2] === 'function' ? spriteAnimationOffset[2]() : spriteAnimationOffset[2];
+                var currentZ = zOffset + zStart + zProg;
 
+                //console.log('\t zStart = ', zStart);
+                //console.log('\t zEnd = ', zEnd);
+                //console.log('\t zDiff = ', zDiff);
+                //console.log('\t zProg = ', zProg);
+                //console.log('\t zOffset = ', zOffset);
                 //console.log('\t currentZ = ', currentZ);
 
-                currentSpritePosition = [currentX, currentY, currentZ];
+                var opacityStart = stepData.startPosition[3];
+                var opacityEnd = stepData.endPosition[3];
+                var opacityDiff = opacityStart - opacityEnd;
+                var opacityProg = (opacityDiff * stepProgressMultiplier) * -1;
+                var opacityOffset = typeof spriteAnimationOffset[3] === 'function' ? spriteAnimationOffset[3]() : spriteAnimationOffset[3];
+                //var currentOpacity = opacityOffset + opacityStart + opacityProg;
+                var currentOpacity = opacityStart + opacityProg;
+
+                //console.log('\t opacityStart = ', opacityStart);
+                //console.log('\t opacityEnd = ', opacityEnd);
+                //console.log('\t opacityDiff = ', opacityDiff);
+                //console.log('\t opacityProg = ', opacityProg);
+                //console.log('\t opacityOffset = ', opacityOffset);
+                //console.log('\t currentOpacity = ', currentOpacity);
+
+                currentSpritePosition = [currentX, currentY, currentZ, currentOpacity];
+
+                //console.log('\t currentSpritePosition = ', currentSpritePosition);
 
                 break;
                 }

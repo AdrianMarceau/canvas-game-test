@@ -267,7 +267,7 @@
         //console.log('canvasGameEngine.initGameLoop()');
 
         // Define click event for the "Pause Game" / "Resume Game" buttons
-        $('.buttons .button.pause', thisGame.gameWindow.buttonsDiv).bind('click', function(e){
+        $('.button.pause', thisGame.gameWindow.buttonsDiv).bind('click', function(e){
             //console.log('.pause.click()');
             e.preventDefault();
             var thisButton = $(this);
@@ -285,7 +285,7 @@
             });
 
         // Define click event for the "Show Debug" / "Hide Debug" buttons
-        $('.buttons .button.debug', thisGame.gameWindow.buttonsDiv).bind('click', function(e){
+        $('.button.debug', thisGame.gameWindow.buttonsDiv).bind('click', function(e){
             //console.log('.debug.click()');
             e.preventDefault();
             var thisButton = $(this);
@@ -458,8 +458,8 @@
             var operatorEnergySprite = {
                 globalFrameStart: thisGame.gameState.currentFrame,
                 filePath: statusBarLeft,
-                basePosition: [positionX, positionY, 2000],
-                currentPosition: [positionX, positionY, 2000],
+                basePosition: [positionX, positionY, 2000, 1],
+                currentPosition: [positionX, positionY, 2000, 1],
                 frameWidth: 150,
                 frameHeight: 50,
                 frameSpeed: 1,
@@ -495,8 +495,8 @@
             var operatorEnergySprite = {
                 globalFrameStart: thisGame.gameState.currentFrame,
                 filePath: statusBarRight,
-                basePosition: [positionX, positionY, 2000],
-                currentPosition: [positionX, positionY, 2000],
+                basePosition: [positionX, positionY, 2000, 1],
+                currentPosition: [positionX, positionY, 2000, 1],
                 frameWidth: 150,
                 frameHeight: 50,
                 frameSpeed: 1,
@@ -623,7 +623,8 @@
             var backupBasePosition = [
                 thisSprite.basePosition[0],
                 thisSprite.basePosition[1],
-                thisSprite.basePosition[2]
+                thisSprite.basePosition[2],
+                thisSprite.basePosition[3]
                 ];
 
             // Backup the animation steps before mods
@@ -646,6 +647,7 @@
                         thisSprite.basePosition[0] = targetSprite.basePosition[0];
                         thisSprite.basePosition[1] = targetSprite.basePosition[1];
                         thisSprite.basePosition[2] = targetSprite.basePosition[2];
+                        thisSprite.basePosition[3] = targetSprite.basePosition[3];
                         }
 
                     }
@@ -676,7 +678,7 @@
             //console.log('updateCanvasSprites = spritePosition = ', spritePosition);
 
             // Update this sprite's current position variables with calculated values
-            thisSprite.currentPosition = [spritePosition[0], spritePosition[1], spritePosition[2]];
+            thisSprite.currentPosition = [spritePosition[0], spritePosition[1], spritePosition[2], spritePosition[3]];
 
             // Restore the sprite's base position back to normal
             thisSprite.basePosition = backupBasePosition;
@@ -744,6 +746,7 @@
         var spriteDiffX = 0;
         var spriteDiffY = 0;
         var spriteDiffZ = 0;
+        var spriteDiffOpacity = 0;
 
         // If the battlefield itself has moved at all, we should adjust the cell too
         if (typeof canvasSprite !== 'undefined'
@@ -752,23 +755,26 @@
 
             if ((canvasSprite.currentPosition[0] != canvasSprite.basePosition[0])
                 || (canvasSprite.currentPosition[1] != canvasSprite.basePosition[1])
-                || (canvasSprite.currentPosition[2] != canvasSprite.basePosition[2])){
+                || (canvasSprite.currentPosition[2] != canvasSprite.basePosition[2])
+                || (canvasSprite.currentPosition[3] != canvasSprite.basePosition[3])){
                 //console.log('\t adjust robot cell by battle field position change...');
 
                 // Collect the X and Y position difference from base value
                 spriteDiffX = canvasSprite.currentPosition[0] - canvasSprite.basePosition[0];
                 spriteDiffY = canvasSprite.currentPosition[1] - canvasSprite.basePosition[1];
                 spriteDiffZ = canvasSprite.currentPosition[2] - canvasSprite.basePosition[2];
+                spriteDiffOpacity = canvasSprite.currentPosition[3] - canvasSprite.basePosition[3];
                 //console.log('\t spriteDiffX = ', spriteDiffX);
                 //console.log('\t spriteDiffY = ', spriteDiffY);
                 //console.log('\t spriteDiffZ = ', spriteDiffZ);
+                //console.log('\t spriteDiffOpacity = ', spriteDiffOpacity);
 
                 }
 
             }
 
         // Return calculated position diffs
-        return [spriteDiffX, spriteDiffY, spriteDiffZ];
+        return [spriteDiffX, spriteDiffY, spriteDiffZ, spriteDiffOpacity];
 
     }
 
