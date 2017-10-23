@@ -247,13 +247,13 @@
             frameSequence: [0],
             frameAnimationSequence: [{
                 // fade in
-                "startPosition": [0, 0, 0, 0.3],
-                "endPosition": [0, 0, 0, 0.6],
+                "startPosition": [0, 0, 0, 0.1],
+                "endPosition": [0, 0, 0, 0.3],
                 "frameDuration": 60
                 }, {
                 // fade out
-                "startPosition": [0, 0, 0, 0.6],
-                "endPosition": [0, 0, 0, 0.3],
+                "startPosition": [0, 0, 0, 0.3],
+                "endPosition": [0, 0, 0, 0.1],
                 "frameDuration": 60
                 }],
             frameSync: false,
