@@ -267,7 +267,7 @@
         //console.log('canvasGameEngine.initGameLoop()');
 
         // Define click event for the "Pause Game" / "Resume Game" buttons
-        $('.pause', thisGame.gameWindow.buttonsDiv).bind('click', function(e){
+        $('.buttons .button.pause', thisGame.gameWindow.buttonsDiv).bind('click', function(e){
             //console.log('.pause.click()');
             e.preventDefault();
             var thisButton = $(this);
@@ -285,7 +285,7 @@
             });
 
         // Define click event for the "Show Debug" / "Hide Debug" buttons
-        $('.debug', thisGame.gameWindow.buttonsDiv).bind('click', function(e){
+        $('.buttons .button.debug', thisGame.gameWindow.buttonsDiv).bind('click', function(e){
             //console.log('.debug.click()');
             e.preventDefault();
             var thisButton = $(this);
@@ -456,6 +456,7 @@
 
             var energySpriteKey = 'thisTeam/operators/energy';
             var operatorEnergySprite = {
+                globalFrameStart: thisGame.gameState.currentFrame,
                 filePath: statusBarLeft,
                 basePosition: [positionX, positionY, 2000],
                 currentPosition: [positionX, positionY, 2000],
@@ -466,10 +467,9 @@
                 frameDirection: 'right',
                 frameSequence: [0],
                 frameAnimationSequence: [],
-                frameSync: false
+                frameSync: false,
+                currentFrameKey: 0
                 };
-            operatorEnergySprite.globalFrameStart = thisGame.gameState.currentFrame;
-            operatorEnergySprite.currentFrameKey = 0;
             operatorEnergySprite.spriteObject = thisGame.newCanvasSprite(
                 energySpriteKey,
                 operatorEnergySprite.filePath,
@@ -493,6 +493,7 @@
 
             var energySpriteKey = 'targetTeam/operators/energy';
             var operatorEnergySprite = {
+                globalFrameStart: thisGame.gameState.currentFrame,
                 filePath: statusBarRight,
                 basePosition: [positionX, positionY, 2000],
                 currentPosition: [positionX, positionY, 2000],
@@ -503,10 +504,9 @@
                 frameDirection: 'left',
                 frameSequence: [0],
                 frameAnimationSequence: [],
-                frameSync: false
+                frameSync: false,
+                currentFrameKey: 0
                 };
-            operatorEnergySprite.globalFrameStart = thisGame.gameState.currentFrame;
-            operatorEnergySprite.currentFrameKey = 0;
             operatorEnergySprite.spriteObject = thisGame.newCanvasSprite(
                 energySpriteKey,
                 operatorEnergySprite.filePath,
@@ -736,6 +736,42 @@
 
     }
 
+
+    // Define a function for calculating the difference between a sprite's base and current position values
+    function getCanvasSpritePositionDiff(canvasSprite){
+
+        // Define the base diff values as zero
+        var spriteDiffX = 0;
+        var spriteDiffY = 0;
+        var spriteDiffZ = 0;
+
+        // If the battlefield itself has moved at all, we should adjust the cell too
+        if (typeof canvasSprite !== 'undefined'
+            && typeof canvasSprite.currentPosition !== 'undefined'){
+            //console.log('\t canvasSprite exists and has position...');
+
+            if ((canvasSprite.currentPosition[0] != canvasSprite.basePosition[0])
+                || (canvasSprite.currentPosition[1] != canvasSprite.basePosition[1])
+                || (canvasSprite.currentPosition[2] != canvasSprite.basePosition[2])){
+                //console.log('\t adjust robot cell by battle field position change...');
+
+                // Collect the X and Y position difference from base value
+                spriteDiffX = canvasSprite.currentPosition[0] - canvasSprite.basePosition[0];
+                spriteDiffY = canvasSprite.currentPosition[1] - canvasSprite.basePosition[1];
+                spriteDiffZ = canvasSprite.currentPosition[2] - canvasSprite.basePosition[2];
+                //console.log('\t spriteDiffX = ', spriteDiffX);
+                //console.log('\t spriteDiffY = ', spriteDiffY);
+                //console.log('\t spriteDiffZ = ', spriteDiffZ);
+
+                }
+
+            }
+
+        // Return calculated position diffs
+        return [spriteDiffX, spriteDiffY, spriteDiffZ];
+
+    }
+
     // Define a function for rendering canvas sprites based on calculated positions
     function renderCanvasSprites(){
         //console.log('canvasGameEngine.renderCanvasSprites()');
@@ -905,6 +941,7 @@
     // Assign canvas functions to the prototype so modules have access
     canvasGameEngine.prototype.newCanvasSprite = newCanvasSprite;
     canvasGameEngine.prototype.updateCanvasSpriteRenderOrder = updateCanvasSpriteRenderOrder;
+    canvasGameEngine.prototype.getCanvasSpritePositionDiff = getCanvasSpritePositionDiff;
 
 
 }(jQuery));
