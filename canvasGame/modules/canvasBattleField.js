@@ -189,6 +189,86 @@
 
     }
 
+    // Define a function for generating and loading field background sprite
+    function loadFieldForegroundPanelSprites(fieldForeground){
+        //console.log('canvasBattleField.loadFieldForegroundPanelSprites()', fieldForeground);
+
+        // Define a function for calculation the X position of panels
+        var panelPositionX = function(){
+
+            // Default the X position to zero
+            var positionX = 0;
+
+            // If a field foreground is defined, use it to offset X
+            if (typeof thisGame.gameSpriteIndex['fieldForeground'] !== 'undefined'){
+                var fieldForeground = thisGame.gameSpriteIndex['fieldForeground'];
+                var fieldForegroundDiff = thisGame.getCanvasSpritePositionDiff(fieldForeground);
+                if (typeof fieldForeground.panelOffsetX !== 'undefined'){ positionX += fieldForeground.panelOffsetX; }
+                positionX = fieldForeground.basePosition[0];
+                positionX += fieldForegroundDiff[0];
+            }
+
+            // Return calculate X position
+            return positionX;
+
+            };
+
+        // Define a function for calculation the Y position of panels
+        var panelPositionY = function(){
+
+            // Default the Y position to zero
+            var positionY = 0;
+
+            // If a field foreground is defined, use it to offset Y
+            if (typeof thisGame.gameSpriteIndex['fieldForeground'] !== 'undefined'){
+                var fieldForeground = thisGame.gameSpriteIndex['fieldForeground'];
+                var fieldForegroundDiff = thisGame.getCanvasSpritePositionDiff(fieldForeground);
+                positionY = fieldForeground.basePosition[1];
+                if (typeof fieldForeground.panelOffsetY !== 'undefined'){ positionY += fieldForeground.panelOffsetY; }
+                positionY += fieldForegroundDiff[1];
+            }
+
+            // Return calculate Y position
+            return positionY;
+
+            };
+
+        // Generate a new sprite for the field foreground
+        var spriteIndexKey = 'fieldForegroundPanels';
+        var fieldForegroundPanels = {
+            globalFrameStart: thisGame.gameState.currentFrame,
+            filePath: thisGame.gameSettings.baseCorePath + 'images/field-panels_default.png',
+            basePosition: [panelPositionX, panelPositionY, 30],
+            currentPosition: [panelPositionX, panelPositionY, 30],
+            frameWidth: thisGame.gameSettings.baseForegroundWidth,
+            frameHeight: thisGame.gameSettings.baseForegroundHeight,
+            frameSpeed: 1,
+            frameLayout: 'vertical',
+            frameSequence: [0],
+            frameAnimationSequence: [],
+            frameSync: false,
+            currentFrameKey: 0,
+            currentOpacity: 0.3
+            };
+        fieldForegroundPanels.spriteObject = thisGame.newCanvasSprite(
+            spriteIndexKey,
+            thisGame.gameSettings.baseCorePath + 'images/field-panels_default.png',
+            thisGame.gameSettings.baseForegroundWidth,
+            thisGame.gameSettings.baseForegroundHeight,
+            fieldForegroundPanels.frameLayout,
+            fieldForegroundPanels.frameSpeed,
+            fieldForegroundPanels.frameSequence,
+            fieldForegroundPanels.frameSync
+            );
+
+        // Add generated field sprite to the parent index
+        thisGame.gameSpriteIndex[spriteIndexKey] = fieldForegroundPanels;
+
+        // Refresh the sprite rendering order
+        thisGame.updateCanvasSpriteRenderOrder();
+
+    }
+
 
     // -- GAME EVENT FUNCTIONS -- //
 
@@ -223,6 +303,9 @@
         // Load the field foreground sprite
         loadFieldForegroundSprite(thisGame.battleField.fieldForeground);
 
+        // Load the field panel sprites
+        loadFieldForegroundPanelSprites();
+
         // Return true on success
         return true;
 
@@ -234,6 +317,9 @@
     // Preload the compiled field object index
     thisGame.gameScriptIndexes.push('objects/index.js.php?type=fields');
     //console.log('thisGame.gameScriptIndexes.push(\'objects/index.js.php?type=fields\');', thisGame.gameScriptIndexes);
+
+    // Preload images for the field cell panels
+    thisGame.gameImages.push(thisGame.gameSettings.baseCorePath + 'images/field-panels_default.png');
 
 
 }(window.thisCanvasGame));
