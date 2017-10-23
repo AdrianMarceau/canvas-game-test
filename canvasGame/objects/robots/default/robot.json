@@ -18,16 +18,6 @@
             "startPosition": [20, 0],
             "endPosition": [-10, 0],
             "frameDuration": 60
-            }, {
-            // pan up
-            "startPosition": [-10, 0],
-            "endPosition": [-10, -10],
-            "frameDuration": 60
-            }, {
-            // pan down
-            "startPosition": [-10, -10],
-            "endPosition": [-10, 0],
-            "frameDuration": 60
             }]
         }
     }
